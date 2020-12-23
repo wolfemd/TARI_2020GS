@@ -1,17 +1,41 @@
-name: "TARI_2020GS"
+name: TARI_2020GS
 output_dir: ../docs
 navbar:
-  title: "TARI_2020GS"
+  title: TARI_2020GS
   left:
   - text: Home
     href: index.html
-  - text: About
-    href: about.html
-  - text: License
-    href: license.html
+  - text: December2020 Impute
+    menu:
+    - text: Conversion DArT report DCas20_5629 to VCF
+      href: convertDCas20_5629_ToVCF.html
+    - text: Impute DCas20_5629
+      href: ImputeDCas20_5629.html
+  - text: December2020 Predictions
+    menu:
+    - text: Data Cleaning
+      href: 01-cleanTPdata.html
+    - text: Get BLUPs
+      href: 02-GetBLUPs.html
+    - text: Check prediction accuracy
+      href: 03-CrossValidation.html
+    - text: Get GEBV/GETGV for GS C1
+      href: 04-GetGBLUPs.html
+  - text: Results
+    href: 05-Results.html
+  - text: Other
+    menu:
+    - text: About
+      href: about.html
+    - text: License
+      href: license.html
+  right:
+  - icon: fa-github
+    text: Source code
+    href: https://github.com/wolfemd/TARI_2020GS
 output:
   workflowr::wflow_html:
     toc: yes
     toc_float: yes
-    theme: cosmo
-    highlight: textmate
+    theme: yeti
+    highlight: tango
