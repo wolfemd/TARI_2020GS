@@ -123,7 +123,8 @@ blups %>%
   theme_bw() + scale_fill_viridis_d() + 
   labs(title = "Distribution of BLUP Reliabilities")
 ```
-# Prediction accuracy.
+
+# Prediction accuracy
 
 3. [Check prediction accuracy](08-CrossValidation.html): Evaluate prediction accuracy with cross-validation.
     * Compare prediction accuracy with vs. without IITA's training data to augment.
@@ -143,18 +144,29 @@ cv %<>%
 ```
 
 ## Table of mean accuracies
+
+5-fold cross-validation, replicated 10 times.
+
+Mean accuracy and upper/lower 95% interval.
+
+Two prediction models: A (additive-only) and ADE (additive + dominance + additive-by-dominance epistasis).
+
 ```{r, rows.print=12}
 cv %>% 
-  group_by(Trait) %>% 
+  group_by(Trait,modelType) %>% 
   # use accGETGV. For modelA we GETGV==GEBV. For modelADE we don't want GEBV, just GETGV.
   summarize(meanAccuracy=mean(accGETGV,na.rm=T),
             lower5pct=quantile(accGETGV,probs = c(0.05),na.rm=T),
             upper5pct=quantile(accGETGV,probs = c(0.95),na.rm=T)) %>% 
-  mutate(across(is.numeric,~round(.,2))) %>% arrange(desc(meanAccuracy)) %>% 
+  mutate(across(is.numeric,~round(.,2))) %>% arrange(modelType,desc(meanAccuracy)) %>% 
   rmarkdown::paged_table()
 ```
 
 ## Boxplot of accuracies
+
+5-fold cross-validation, replicated 10 times.
+
+Two prediction models: A (additive-only) and ADE (additive + dominance + additive-by-dominance epistasis).
 
 ```{r, fig.width=10, fig.height=5}
 cv %>% 
