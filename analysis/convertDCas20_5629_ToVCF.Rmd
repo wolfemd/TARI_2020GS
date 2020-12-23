@@ -1,0 +1,125 @@
+---
+title: "Convert TARI DCas20-5629 to VCF"
+site: workflowr::wflow_site
+date: "2020-December-16"
+output: 
+  workflowr::wflow_html:
+    toc: true
+editor_options:
+  chunk_output_type: inline
+---
+
+```{bash, eval=F}
+cd /home/jj332_cas/marnin/TARI_2020GS
+```
+
+# Input Parameters
+```{r, eval=F}
+#' @dartvcfInput input name and path of "vcf" file from DArT
+#' @dartcountsInput input name and path of counts file from DArT
+#' @outName output path and name
+#' @nskipvcf number of "VCF" rows to skip on read-in
+#' @nskipcounts number of "counts file" rows to skip on read in
+#' @ncores number of cores to use, could be VERY memory intensive
+#' @dartVars chr vector, column names that _are not_ sample IDs in the read-counts file. I use this internally to assign the sampleIDs in the VCF file
+
+library(tidyverse); library(magrittr)
+dartvcfInput<-here::here("data/Report-DCas20-5629","Report_5629_VCF_Ref_Version6.txt")
+dartcountsInput<-here::here("data/Report-DCas20-5629","Report_5629_Counts_Ref_Version6.csv")
+outName<-here::here("data/Report-DCas20-5629","DCas20_5629")
+nskipvcf<-2 
+nskipcounts<-3
+ncores<-10
+```
+
+# Prelim. check format
+
+Start manual. Check that the files read in according to previous code. Adjust code if necessary. Make a function and apply it to the input files.
+
+```{r, eval=F}
+vcf<-read.table(dartvcfInput,
+                stringsAsFactors = F,skip = nskipvcf, header = T, sep = "\t", comment.char = "")
+readCounts<-read.csv(dartcountsInput, stringsAsFactors = F,header = T,skip=nskipcounts)
+
+dim(vcf)
+# [1] 13603  3157
+dim(readCounts)
+# [1] 27206  3191
+# 
+# 
+# # Initial look at names....
+colnames(readCounts)[1:100]
+ # [1] "AlleleID"                    "CloneID"                    
+ #  [3] "ClusterTempIndex"            "AlleleSequence"             
+ #  [5] "TrimmedSequence"             "TrimmedSequence_plus_Strand"
+ #  [7] "Short"                       "Lowcomplexity"              
+ #  [9] "Chrom_Cassava_v61"           "ChromPos_Cassava_v61"       
+ # [11] "SNP_ChromPos_Cassava_v61"    "AlnCnt_Cassava_v61"         
+ # [13] "AlnEvalue_Cassava_v61"       "Strand_Cassava_v61"         
+ # [15] "SeqDiff_Cassava_v61"         "ClusterConsensusSequence"   
+ # [17] "ClusterSize"                 "AlleleSeqDist"              
+ # [19] "SNP"                         "SnpPosition"                
+ # [21] "CallRate"                    "OneRatioRef"                
+ # [23] "OneRatioSnp"                 "FreqHomRef"                 
+ # [25] "FreqHomSnp"                  "FreqHets"                   
+ # [27] "PICRef"                      "PICSnp"                     
+ # [29] "AvgPIC"                      "AvgCountRef"                
+ # [31] "AvgCountSnp"                 "RatioAvgCountRefAvgCountSnp"
+ # [33] "FreqHetsMinusFreqMinHom"     "AlleleCountsCorrelation"    
+ # [35] "aggregateTagsTotal"          "DerivedCorrMinusSeedCorr"   
+ # [37] "RepRef"                      "RepSNP"                     
+ # [39] "RepAvg"                      "PicRepRef"                  
+ # [41] "PicRepSNP"                   "TotalPicRepRefTest"         
+ # [43] "TotalPicRepSnpTest"          "C1GS_A01...TZMRK180001"     
+ # [45] "C1GS_B01...TZMRK180001"      "C1GS_C01...TZMRK180001"     
+ # [47] "C1GS_D01...TZMRK180001"      "C1GS_E01...TZMRK180001"     
+ # [49] "C1GS_F01...TZMRK180001"      "C1GS_G01...TZMRK180001"     
+ # [51] "C1GS_H01...TZMRK180001"      "C1GS_A02...TZMRK180001"     
+ # [53] "C1GS_B02...TZMRK180001"      "C1GS_C02...TZMRK180001"     
+ # [55] "C1GS_D02...TZMRK180001"      "C1GS_E02...TZMRK180001"     
+ # [57] "C1GS_F02...TZMRK180001"      "C1GS_G02...TZMRK180001" 
+colnames(vcf)[1:30]
+#  [1] "X.CHROM"                "POS"                    "ID"                    
+#  [4] "REF"                    "ALT"                    "QUAL"                  
+#  [7] "FILTER"                 "INFO"                   "FORMAT"                
+# [10] "C1GS_A01...TZMRK180001" "C1GS_A10...TZMRK180001" "C1GS_A11...TZMRK180001"
+# [13] "C1GS_A02...TZMRK180001" "C1GS_A03...TZMRK180001" "C1GS_A04...TZMRK180001"
+# [16] "C1GS_A05...TZMRK180001" "C1GS_A06...TZMRK180001" "C1GS_A07...TZMRK180001"
+# [19] "C1GS_A08...TZMRK180001" "C1GS_A09...TZMRK180001" "C1GS_B01...TZMRK180001"
+# [22] "C1GS_B10...TZMRK180001" "C1GS_B11...TZMRK180001" "C1GS_B12...TZMRK180001"
+# [25] "C1GS_B02...TZMRK180001" "C1GS_B03...TZMRK180001" "C1GS_B04...TZMRK180001"
+# [28] "C1GS_B05...TZMRK180001" "C1GS_B06...TZMRK180001" "C1GS_B07...TZMRK180001"
+
+# rm(vcf,readCounts); gc()
+```
+
+# Conversion function
+
+Available and sourced from `code/` subdirectory: `convertDart2vcf.R`.
+
+# Run conversion function
+```{r, eval=F}
+source(here::here("code/","convertDart2vcf.R"))
+convertDart2vcf(dartvcfInput,dartcountsInput,outName,
+                nskipvcf=2,nskipcounts=3,ncores)
+```
+
+# Genomewide to per-chrom VCFs
+
+Split the genome-wide VCF into per-chromosome VCFs for imputation.
+
+```{r,eval = FALSE}
+require(furrr); options(mc.cores=18); plan(multiprocess)
+source(here::here("code","imputationFunctions.R"))
+
+vcfIn<-here::here("data/Report-DCas20-5629","DCas20_5629.vcf.gz")
+filters<-"--minDP 4 --maxDP 50" # because using GT not PL for impute (Beagle5)
+outPath<-here::here("data/Report-DCas20-5629")
+outSuffix<-"DCas20_5629"
+
+future_map(1:18,
+           ~splitVCFbyChr(Chr=.,
+                          vcfIn=vcfIn,filters=filters,
+                          outPath=outPath,outSuffix=outSuffix))
+```
+
