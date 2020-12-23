@@ -659,16 +659,16 @@ This reproducible <a href="http://rmarkdown.rstudio.com">R Markdown</a> analysis
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongfae176a"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> fae176a </a>
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrong6a50ab2"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> 6a50ab2 </a>
 </p>
 </div>
-<div id="strongRepositoryversionstrongfae176a" class="panel-collapse collapse">
+<div id="strongRepositoryversionstrong6a50ab2" class="panel-collapse collapse">
 <div class="panel-body">
 <p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility.
 </p>
 <p>
-The results in this page were generated with repository version fae176a. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
+The results in this page were generated with repository version 6a50ab2. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
 </p>
 <p>
 Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
@@ -1169,6 +1169,40 @@ Message
 Rmd
 </td>
 <td>
+6a50ab2
+</td>
+<td>
+wolfemd
+</td>
+<td>
+2020-12-23
+</td>
+<td>
+Tweak one heading…
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+abaf52a
+</td>
+<td>
+wolfemd
+</td>
+<td>
+2020-12-23
+</td>
+<td>
+Build site.
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
 fae176a
 </td>
 <td>
@@ -1223,7 +1257,45 @@ Publish the first set of analyses and files for TARI 2020 GS.
 <span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">pivot_longer</span>(<span class="at">cols =</span> <span class="fu">any_of</span>(traits), <span class="at">values_to =</span> <span class="st">&quot;Value&quot;</span>, <span class="at">names_to =</span> <span class="st">&quot;Trait&quot;</span>) <span class="sc">%&gt;%</span> </span>
 <span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>    <span class="fu">ggplot</span>(., <span class="fu">aes</span>(<span class="at">x =</span> Value, <span class="at">fill =</span> Trait)) <span class="sc">+</span> <span class="fu">geom_histogram</span>() <span class="sc">+</span> <span class="fu">facet_wrap</span>(<span class="sc">~</span>Trait, </span>
 <span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">scales =</span> <span class="st">&quot;free&quot;</span>) <span class="sc">+</span> <span class="fu">theme_bw</span>() <span class="sc">+</span> <span class="fu">scale_fill_viridis_d</span>() <span class="sc">+</span> <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">&quot;Distribution of Raw Phenotypic Values&quot;</span>)</span></code></pre></div>
-<p><img src="figure/05-Results.Rmd/unnamed-chunk-4-1.png" width="960" style="display: block; margin: auto;" /> How many genotyped-and-phenotyped clones?</p>
+<p><img src="figure/05-Results.Rmd/unnamed-chunk-4-1.png" width="960" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-4-1">
+Past versions of unnamed-chunk-4-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-4-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+abaf52a
+</td>
+<td>
+wolfemd
+</td>
+<td>
+2020-12-23
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>How many genotyped-and-phenotyped clones?</p>
 <div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>rawdata <span class="sc">%&gt;%</span> <span class="fu">select</span>(locationName, studyYear, studyName, TrialType, germplasmName, </span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>    FullSampleName, GID, <span class="fu">any_of</span>(traits)) <span class="sc">%&gt;%</span> <span class="fu">pivot_longer</span>(<span class="at">cols =</span> <span class="fu">any_of</span>(traits), </span>
 <span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">values_to =</span> <span class="st">&quot;Value&quot;</span>, <span class="at">names_to =</span> <span class="st">&quot;Trait&quot;</span>) <span class="sc">%&gt;%</span> <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">is.na</span>(Value), <span class="sc">!</span><span class="fu">is.na</span>(FullSampleName)) <span class="sc">%&gt;%</span> </span>
@@ -1277,10 +1349,87 @@ Publish the first set of analyses and files for TARI 2020 GS.
 <span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_histogram</span>() <span class="sc">+</span> <span class="fu">facet_wrap</span>(<span class="sc">~</span>Trait, <span class="at">scales =</span> <span class="st">&quot;free&quot;</span>) <span class="sc">+</span> <span class="fu">theme_bw</span>() <span class="sc">+</span> <span class="fu">scale_fill_viridis_d</span>() <span class="sc">+</span> </span>
 <span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">&quot;Distribution of de-regressed BLUP Values&quot;</span>)</span></code></pre></div>
 <p><img src="figure/05-Results.Rmd/unnamed-chunk-8-1.png" width="960" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-8-1">
+Past versions of unnamed-chunk-8-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-8-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+abaf52a
+</td>
+<td>
+wolfemd
+</td>
+<td>
+2020-12-23
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>blups <span class="sc">%&gt;%</span> <span class="fu">select</span>(Trait, blups) <span class="sc">%&gt;%</span> <span class="fu">unnest</span>(blups) <span class="sc">%&gt;%</span> <span class="fu">ggplot</span>(., <span class="fu">aes</span>(<span class="at">x =</span> REL, <span class="at">fill =</span> Trait)) <span class="sc">+</span> </span>
 <span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_histogram</span>() <span class="sc">+</span> <span class="fu">facet_wrap</span>(<span class="sc">~</span>Trait, <span class="at">scales =</span> <span class="st">&quot;free&quot;</span>) <span class="sc">+</span> <span class="fu">theme_bw</span>() <span class="sc">+</span> <span class="fu">scale_fill_viridis_d</span>() <span class="sc">+</span> </span>
 <span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">&quot;Distribution of BLUP Reliabilities&quot;</span>)</span></code></pre></div>
-<p><img src="figure/05-Results.Rmd/unnamed-chunk-9-1.png" width="960" style="display: block; margin: auto;" /> # Prediction accuracy.</p>
+<p><img src="figure/05-Results.Rmd/unnamed-chunk-9-1.png" width="960" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-9-1">
+Past versions of unnamed-chunk-9-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-9-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+abaf52a
+</td>
+<td>
+wolfemd
+</td>
+<td>
+2020-12-23
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<div id="prediction-accuracy" class="section level1">
+<h1>Prediction accuracy</h1>
 <ol start="3" style="list-style-type: decimal">
 <li><a href="08-CrossValidation.html">Check prediction accuracy</a>: Evaluate prediction accuracy with cross-validation.
 <ul>
@@ -1290,8 +1439,8 @@ Publish the first set of analyses and files for TARI 2020 GS.
 <div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="fu">rm</span>(<span class="at">list =</span> <span class="fu">ls</span>())</span>
 <span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="fu">gc</span>()</span></code></pre></div>
 <pre><code>          used (Mb) gc trigger  (Mb) limit (Mb) max used  (Mb)
-Ncells 1285983 68.7    3051641 163.0         NA  2125557 113.6
-Vcells 2430943 18.6   10146329  77.5     102400 10141707  77.4</code></pre>
+Ncells 1286042 68.7    3034042 162.1         NA  2202262 117.7
+Vcells 2431465 18.6   10146329  77.5     102400 10142130  77.4</code></pre>
 <div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
 <span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(magrittr)</span>
 <span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>cv <span class="ot">&lt;-</span> <span class="fu">readRDS</span>(here<span class="sc">::</span><span class="fu">here</span>(<span class="st">&quot;output&quot;</span>, <span class="st">&quot;cvresults_A_2020Dec21.rds&quot;</span>)) <span class="sc">%&gt;%</span> <span class="fu">bind_rows</span>(<span class="fu">readRDS</span>(here<span class="sc">::</span><span class="fu">here</span>(<span class="st">&quot;output&quot;</span>, </span>
@@ -1302,20 +1451,25 @@ Vcells 2430943 18.6   10146329  77.5     102400 10141707  77.4</code></pre>
 <span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">levels =</span> <span class="fu">c</span>(<span class="st">&quot;A&quot;</span>, <span class="st">&quot;ADE&quot;</span>)))</span></code></pre></div>
 <div id="table-of-mean-accuracies" class="section level2">
 <h2>Table of mean accuracies</h2>
-<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>cv <span class="sc">%&gt;%</span> <span class="fu">group_by</span>(Trait) <span class="sc">%&gt;%</span> <span class="co"># use accGETGV. For modelA we GETGV==GEBV. For modelADE we don&#39;t want GEBV, just</span></span>
+<p>5-fold cross-validation, replicated 10 times.</p>
+<p>Mean accuracy and upper/lower 95% interval.</p>
+<p>Two prediction models: A (additive-only) and ADE (additive + dominance + additive-by-dominance epistasis).</p>
+<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>cv <span class="sc">%&gt;%</span> <span class="fu">group_by</span>(Trait, modelType) <span class="sc">%&gt;%</span> <span class="co"># use accGETGV. For modelA we GETGV==GEBV. For modelADE we don&#39;t want GEBV, just</span></span>
 <span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a><span class="co"># GETGV.</span></span>
 <span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a><span class="fu">summarize</span>(<span class="at">meanAccuracy =</span> <span class="fu">mean</span>(accGETGV, <span class="at">na.rm =</span> T), <span class="at">lower5pct =</span> <span class="fu">quantile</span>(accGETGV, </span>
 <span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">probs =</span> <span class="fu">c</span>(<span class="fl">0.05</span>), <span class="at">na.rm =</span> T), <span class="at">upper5pct =</span> <span class="fu">quantile</span>(accGETGV, <span class="at">probs =</span> <span class="fu">c</span>(<span class="fl">0.95</span>), </span>
-<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">na.rm =</span> T)) <span class="sc">%&gt;%</span> <span class="fu">mutate</span>(<span class="fu">across</span>(is.numeric, <span class="sc">~</span><span class="fu">round</span>(., <span class="dv">2</span>))) <span class="sc">%&gt;%</span> <span class="fu">arrange</span>(<span class="fu">desc</span>(meanAccuracy)) <span class="sc">%&gt;%</span> </span>
-<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>    rmarkdown<span class="sc">::</span><span class="fu">paged_table</span>()</span></code></pre></div>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">na.rm =</span> T)) <span class="sc">%&gt;%</span> <span class="fu">mutate</span>(<span class="fu">across</span>(is.numeric, <span class="sc">~</span><span class="fu">round</span>(., <span class="dv">2</span>))) <span class="sc">%&gt;%</span> <span class="fu">arrange</span>(modelType, </span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>    <span class="fu">desc</span>(meanAccuracy)) <span class="sc">%&gt;%</span> rmarkdown<span class="sc">::</span><span class="fu">paged_table</span>()</span></code></pre></div>
 <div data-pagedtable="false">
 <script data-pagedtable-source type="application/json">
-{"columns":[{"label":["Trait"],"name":[1],"type":["fct"],"align":["left"]},{"label":["meanAccuracy"],"name":[2],"type":["dbl"],"align":["right"]},{"label":["lower5pct"],"name":[3],"type":["dbl"],"align":["right"]},{"label":["upper5pct"],"name":[4],"type":["dbl"],"align":["right"]}],"data":[{"1":"logRTNO","2":"0.31","3":"0.18","4":"0.50"},{"1":"DM","2":"0.30","3":"0.16","4":"0.43"},{"1":"logTOPYLD","2":"0.29","3":"0.15","4":"0.44"},{"1":"MCBSDS","2":"0.26","3":"0.09","4":"0.38"},{"1":"CGMS1","2":"0.26","3":"0.08","4":"0.41"},{"1":"CGMS2","2":"0.16","3":"0.01","4":"0.30"},{"1":"CBSDRS","2":"0.12","3":"-0.04","4":"0.27"},{"1":"HI","2":"0.10","3":"-0.55","4":"0.68"},{"1":"PLTHT","2":"0.03","3":"-0.76","4":"0.69"},{"1":"MCMDS","2":"-0.02","3":"-0.25","4":"0.20"},{"1":"logDYLD","2":"-0.02","3":"-0.73","4":"0.81"},{"1":"logFYLD","2":"-0.30","3":"-0.84","4":"0.76"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[12],"max":[12]},"pages":{}}}
+{"columns":[{"label":["Trait"],"name":[1],"type":["fct"],"align":["left"]},{"label":["modelType"],"name":[2],"type":["fct"],"align":["left"]},{"label":["meanAccuracy"],"name":[3],"type":["dbl"],"align":["right"]},{"label":["lower5pct"],"name":[4],"type":["dbl"],"align":["right"]},{"label":["upper5pct"],"name":[5],"type":["dbl"],"align":["right"]}],"data":[{"1":"logRTNO","2":"A","3":"0.31","4":"0.17","5":"0.50"},{"1":"logTOPYLD","2":"A","3":"0.30","4":"0.12","5":"0.45"},{"1":"DM","2":"A","3":"0.29","4":"0.13","5":"0.42"},{"1":"CGMS1","2":"A","3":"0.27","4":"0.11","5":"0.41"},{"1":"MCBSDS","2":"A","3":"0.25","4":"0.03","5":"0.38"},{"1":"CGMS2","2":"A","3":"0.16","4":"0.01","5":"0.30"},{"1":"CBSDRS","2":"A","3":"0.13","4":"-0.01","5":"0.28"},{"1":"HI","2":"A","3":"0.12","4":"-0.37","5":"0.68"},{"1":"PLTHT","2":"A","3":"0.08","4":"-0.69","5":"0.68"},{"1":"logDYLD","2":"A","3":"-0.13","4":"-0.72","5":"0.34"},{"1":"MCMDS","2":"A","3":"-0.19","4":"-0.23","5":"-0.15"},{"1":"logFYLD","2":"A","3":"-0.38","4":"-0.73","5":"0.04"},{"1":"logRTNO","2":"ADE","3":"0.32","4":"0.22","5":"0.43"},{"1":"DM","2":"ADE","3":"0.31","4":"0.21","5":"0.44"},{"1":"logTOPYLD","2":"ADE","3":"0.29","4":"0.16","5":"0.37"},{"1":"MCBSDS","2":"ADE","3":"0.28","4":"0.15","5":"0.40"},{"1":"CGMS1","2":"ADE","3":"0.25","4":"0.07","5":"0.36"},{"1":"CGMS2","2":"ADE","3":"0.15","4":"0.02","5":"0.31"},{"1":"logDYLD","2":"ADE","3":"0.12","4":"-0.58","5":"0.92"},{"1":"CBSDRS","2":"ADE","3":"0.08","4":"-0.06","5":"0.20"},{"1":"HI","2":"ADE","3":"0.05","4":"-0.58","5":"0.63"},{"1":"logFYLD","2":"ADE","3":"0.03","4":"-0.92","5":"0.90"},{"1":"MCMDS","2":"ADE","3":"0.00","4":"-0.25","5":"0.20"},{"1":"PLTHT","2":"ADE","3":"-0.13","4":"-0.93","5":"0.66"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[12],"max":[12]},"pages":{}}}
   </script>
 </div>
 </div>
 <div id="boxplot-of-accuracies" class="section level2">
 <h2>Boxplot of accuracies</h2>
+<p>5-fold cross-validation, replicated 10 times.</p>
+<p>Two prediction models: A (additive-only) and ADE (additive + dominance + additive-by-dominance epistasis).</p>
 <div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>cv <span class="sc">%&gt;%</span> </span>
 <span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(.,<span class="fu">aes</span>(<span class="at">x=</span>Trait,<span class="at">y=</span>accGETGV,<span class="at">fill=</span>modelType)) <span class="sc">+</span> </span>
 <span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_boxplot</span>(<span class="at">position =</span> <span class="st">&quot;dodge2&quot;</span>,<span class="at">color=</span><span class="st">&#39;gray50&#39;</span>,<span class="at">size=</span><span class="fl">0.5</span>) <span class="sc">+</span> </span>
@@ -1332,6 +1486,43 @@ Vcells 2430943 18.6   10146329  77.5     102400 10141707  77.4</code></pre>
 <span id="cb14-14"><a href="#cb14-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title=</span><span class="st">&quot;Prediction Accuracies&quot;</span>, <span class="at">y=</span><span class="st">&quot;GEBV or GETGV accuracy&quot;</span>,<span class="at">x=</span><span class="cn">NULL</span>) <span class="sc">+</span></span>
 <span id="cb14-15"><a href="#cb14-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_hline</span>(<span class="at">yintercept =</span> <span class="dv">0</span>, <span class="at">color=</span><span class="st">&#39;darkred&#39;</span>)</span></code></pre></div>
 <p><img src="figure/05-Results.Rmd/unnamed-chunk-12-1.png" width="960" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-12-1">
+Past versions of unnamed-chunk-12-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-12-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+abaf52a
+</td>
+<td>
+wolfemd
+</td>
+<td>
+2020-12-23
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <br>
 <p>
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
