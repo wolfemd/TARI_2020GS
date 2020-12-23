@@ -1,0 +1,1707 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+
+
+<title>Review and QC of TARI training data</title>
+
+<script src="site_libs/header-attrs-2.6/header-attrs.js"></script>
+<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/yeti.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/pagedtable-1.1/css/pagedtable.css" rel="stylesheet" />
+<script src="site_libs/pagedtable-1.1/js/pagedtable.js"></script>
+<link href="site_libs/font-awesome-5.1.0/css/all.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-5.1.0/css/v4-shims.css" rel="stylesheet" />
+
+<link rel="icon" href="https://github.com/workflowr/workflowr-assets/raw/master/img/reproducible.png">
+<!-- Add a small amount of space between sections. -->
+<style type="text/css">
+div.section {
+  padding-top: 12px;
+}
+</style>
+
+
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css" data-origin="pandoc">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {  background-color: #f8f8f8; }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ef2929; } /* Alert */
+code span.an { color: #8f5902; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #c4a000; } /* Attribute */
+code span.bn { color: #0000cf; } /* BaseN */
+code span.cf { color: #204a87; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4e9a06; } /* Char */
+code span.cn { color: #000000; } /* Constant */
+code span.co { color: #8f5902; font-style: italic; } /* Comment */
+code span.cv { color: #8f5902; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #8f5902; font-weight: bold; font-style: italic; } /* Documentation */
+code span.dt { color: #204a87; } /* DataType */
+code span.dv { color: #0000cf; } /* DecVal */
+code span.er { color: #a40000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #0000cf; } /* Float */
+code span.fu { color: #000000; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #8f5902; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #204a87; font-weight: bold; } /* Keyword */
+code span.op { color: #ce5c00; font-weight: bold; } /* Operator */
+code span.ot { color: #8f5902; } /* Other */
+code span.pp { color: #8f5902; font-style: italic; } /* Preprocessor */
+code span.sc { color: #000000; } /* SpecialChar */
+code span.ss { color: #4e9a06; } /* SpecialString */
+code span.st { color: #4e9a06; } /* String */
+code span.va { color: #000000; } /* Variable */
+code span.vs { color: #4e9a06; } /* VerbatimString */
+code span.wa { color: #8f5902; font-weight: bold; font-style: italic; } /* Warning */
+
+</style>
+<script>
+// apply pandoc div.sourceCode style to pre.sourceCode instead
+(function() {
+  var sheets = document.styleSheets;
+  for (var i = 0; i < sheets.length; i++) {
+    if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
+    try { var rules = sheets[i].cssRules; } catch (e) { continue; }
+    for (var j = 0; j < rules.length; j++) {
+      var rule = rules[j];
+      // check if there is a div.sourceCode rule
+      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") continue;
+      var style = rule.style.cssText;
+      // check if color or background-color is set
+      if (rule.style.color === '' && rule.style.backgroundColor === '') continue;
+      // replace div.sourceCode by a pre.sourceCode rule
+      sheets[i].deleteRule(j);
+      sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
+    }
+  }
+})();
+</script>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+
+
+<style type="text/css">
+h1 {
+  font-size: 34px;
+}
+h1.title {
+  font-size: 38px;
+}
+h2 {
+  font-size: 30px;
+}
+h3 {
+  font-size: 24px;
+}
+h4 {
+  font-size: 18px;
+}
+h5 {
+  font-size: 16px;
+}
+h6 {
+  font-size: 12px;
+}
+.table th:not([align]) {
+  text-align: left;
+}
+</style>
+
+
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+</style>
+
+
+<style type="text/css">
+/* padding for bootstrap navbar */
+body {
+  padding-top: 51px;
+  padding-bottom: 40px;
+}
+/* offset scroll position for anchor links (for fixed navbar)  */
+.section h1 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h2 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h3 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h4 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h5 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h6 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #ffffff;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script>
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.parent().addClass('active');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "&#xe258;";
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+@media print {
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row-fluid">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">TARI_2020GS</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">Home</a>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    December2020 Impute
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="convertDCas20_5629_ToVCF.html">Conversion DArT report DCas20_5629 to VCF</a>
+    </li>
+    <li>
+      <a href="ImputeDCas20_5629.html">Impute DCas20_5629</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    December2020 Predictions
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="01-cleanTPdata.html">Data Cleaning</a>
+    </li>
+    <li>
+      <a href="02-GetBLUPs.html">Get BLUPs</a>
+    </li>
+    <li>
+      <a href="03-CrossValidation.html">Check prediction accuracy</a>
+    </li>
+    <li>
+      <a href="04-GetGBLUPs.html">Get GEBV/GETGV for GS C1</a>
+    </li>
+  </ul>
+</li>
+<li>
+  <a href="05-Results.html">Results</a>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    Other
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="about.html">About</a>
+    </li>
+    <li>
+      <a href="license.html">License</a>
+    </li>
+  </ul>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li>
+  <a href="https://github.com/wolfemd/TARI_2020GS">
+    <span class="fas fa-github"></span>
+     
+    Source code
+  </a>
+</li>
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div class="fluid-row" id="header">
+
+
+
+<h1 class="title toc-ignore">Review and QC of TARI training data</h1>
+<h4 class="date">2020-December-18</h4>
+
+</div>
+
+
+<p>
+<button type="button" class="btn btn-default btn-workflowr btn-workflowr-report" data-toggle="collapse" data-target="#workflowr-report">
+<span class="glyphicon glyphicon-list" aria-hidden="true"></span> workflowr <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
+</button>
+</p>
+<div id="workflowr-report" class="collapse">
+<ul class="nav nav-tabs">
+<li class="active">
+<a data-toggle="tab" href="#summary">Summary</a>
+</li>
+<li>
+<a data-toggle="tab" href="#checks"> Checks <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> </a>
+</li>
+<li>
+<a data-toggle="tab" href="#versions">Past versions</a>
+</li>
+</ul>
+<div class="tab-content">
+<div id="summary" class="tab-pane fade in active">
+<p>
+<strong>Last updated:</strong> 2020-12-23
+</p>
+<p>
+<strong>Checks:</strong> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 7 <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span> 0
+</p>
+<p>
+<strong>Knit directory:</strong> <code>TARI_2020GS/</code> <span class="glyphicon glyphicon-question-sign" aria-hidden="true" title="This is the local directory in which the code in this file was executed."> </span>
+</p>
+<p>
+This reproducible <a href="http://rmarkdown.rstudio.com">R Markdown</a> analysis was created with <a
+  href="https://github.com/jdblischak/workflowr">workflowr</a> (version 1.6.2). The <em>Checks</em> tab describes the reproducibility checks that were applied when the results were created. The <em>Past versions</em> tab lists the development history.
+</p>
+<hr>
+</div>
+<div id="checks" class="tab-pane fade">
+<div id="workflowr-checks" class="panel-group">
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRMarkdownfilestronguptodate"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>R Markdown file:</strong> up-to-date </a>
+</p>
+</div>
+<div id="strongRMarkdownfilestronguptodate" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great! Since the R Markdown file has been committed to the Git repository, you know the exact version of the code that produced these results.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongEnvironmentstrongempty"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Environment:</strong> empty </a>
+</p>
+</div>
+<div id="strongEnvironmentstrongempty" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great job! The global environment was empty. Objects defined in the global environment can affect the analysis in your R Markdown file in unknown ways. For reproduciblity it’s best to always run the code in an empty environment.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongSeedstrongcodesetseed20201215code"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Seed:</strong> <code>set.seed(20201215)</code> </a>
+</p>
+</div>
+<div id="strongSeedstrongcodesetseed20201215code" class="panel-collapse collapse">
+<div class="panel-body">
+<p>The command <code>set.seed(20201215)</code> was run prior to running the code in the R Markdown file. Setting a seed ensures that any results that rely on randomness, e.g. subsampling or permutations, are reproducible.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongSessioninformationstrongrecorded"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Session information:</strong> recorded </a>
+</p>
+</div>
+<div id="strongSessioninformationstrongrecorded" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great job! Recording the operating system, R version, and package versions is critical for reproducibility.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongCachestrongnone"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Cache:</strong> none </a>
+</p>
+</div>
+<div id="strongCachestrongnone" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Nice! There were no cached chunks for this analysis, so you can be confident that you successfully produced the results during this run.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongFilepathsstrongrelative"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>File paths:</strong> relative </a>
+</p>
+</div>
+<div id="strongFilepathsstrongrelative" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great job! Using relative paths to the files within your workflowr project makes it easier to run your code on other machines.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongfae176a"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> fae176a </a>
+</p>
+</div>
+<div id="strongRepositoryversionstrongfae176a" class="panel-collapse collapse">
+<div class="panel-body">
+<p>
+Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility.
+</p>
+<p>
+The results in this page were generated with repository version fae176a. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
+</p>
+<p>
+Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
+</p>
+<pre><code>
+Ignored files:
+    Ignored:    .DS_Store
+    Ignored:    .Rhistory
+    Ignored:    .Rproj.user/
+    Ignored:    data/.DS_Store
+
+Untracked files:
+    Untracked:  code/convertDart2vcf.R
+    Untracked:  code/gsFunctions.R
+    Untracked:  code/imputationFunctions.R
+    Untracked:  data/DatabaseDownload_2020Dec18/
+    Untracked:  data/GBSdataMasterList_31818.csv
+    Untracked:  data/IITA_GBStoPhenoMaster_33018.csv
+    Untracked:  data/NRCRI_GBStoPhenoMaster_40318.csv
+    Untracked:  data/Report-DCas20-5629/
+    Untracked:  data/Report-DCas20-5629chr10_DCas20_5629.vcf.gz
+    Untracked:  data/Report-DCas20-5629chr11_DCas20_5629.vcf.gz
+    Untracked:  data/Report-DCas20-5629chr12_DCas20_5629.vcf.gz
+    Untracked:  data/Report-DCas20-5629chr13_DCas20_5629.vcf.gz
+    Untracked:  data/Report-DCas20-5629chr14_DCas20_5629.vcf.gz
+    Untracked:  data/Report-DCas20-5629chr15_DCas20_5629.vcf.gz
+    Untracked:  data/Report-DCas20-5629chr16_DCas20_5629.vcf.gz
+    Untracked:  data/Report-DCas20-5629chr17_DCas20_5629.vcf.gz
+    Untracked:  data/Report-DCas20-5629chr18_DCas20_5629.vcf.gz
+    Untracked:  data/Report-DCas20-5629chr1_DCas20_5629.vcf.gz
+    Untracked:  data/Report-DCas20-5629chr2_DCas20_5629.vcf.gz
+    Untracked:  data/Report-DCas20-5629chr3_DCas20_5629.vcf.gz
+    Untracked:  data/Report-DCas20-5629chr4_DCas20_5629.vcf.gz
+    Untracked:  data/Report-DCas20-5629chr5_DCas20_5629.vcf.gz
+    Untracked:  data/Report-DCas20-5629chr6_DCas20_5629.vcf.gz
+    Untracked:  data/Report-DCas20-5629chr7_DCas20_5629.vcf.gz
+    Untracked:  data/Report-DCas20-5629chr8_DCas20_5629.vcf.gz
+    Untracked:  data/Report-DCas20-5629chr9_DCas20_5629.vcf.gz
+    Untracked:  data/chr1_RefPanelAndGSprogeny_ReadyForGP_72719.fam
+    Untracked:  output/BeagleLogs/
+    Untracked:  output/DosageMatrix_DCas20_5629_EA_REFimputedAndFiltered.rds
+    Untracked:  output/DosageMatrix_ImputationReferencePanel_StageVI_91119.rds
+    Untracked:  output/DosageMatrix_TARI_2020Dec21.rds
+    Untracked:  output/GEBV_TARI_ModelA_2020Dec21.csv
+    Untracked:  output/GETGV_TARI_ModelADE_2020Dec21.csv
+    Untracked:  output/Kinship_AD_TARI_2020Dec21.rds
+    Untracked:  output/Kinship_A_TARI_2020Dec21.rds
+    Untracked:  output/Kinship_D_TARI_2020Dec21.rds
+    Untracked:  output/TARI_CleanedTrialData_2020Dec18.rds
+    Untracked:  output/TARI_ExptDesignsDetected_2020Dec18.rds
+    Untracked:  output/TARI_trials_NOT_identifiable.csv
+    Untracked:  output/chr10_DCas20_5629_EA_REFimputed.INFO
+    Untracked:  output/chr10_DCas20_5629_EA_REFimputed.hwe
+    Untracked:  output/chr10_DCas20_5629_EA_REFimputed.log
+    Untracked:  output/chr10_DCas20_5629_EA_REFimputed.sitesPassing
+    Untracked:  output/chr10_DCas20_5629_EA_REFimputed.vcf.gz
+    Untracked:  output/chr10_DCas20_5629_EA_REFimputedAndFiltered.alleleToCount
+    Untracked:  output/chr10_DCas20_5629_EA_REFimputedAndFiltered.bed
+    Untracked:  output/chr10_DCas20_5629_EA_REFimputedAndFiltered.bim
+    Untracked:  output/chr10_DCas20_5629_EA_REFimputedAndFiltered.fam
+    Untracked:  output/chr10_DCas20_5629_EA_REFimputedAndFiltered.log
+    Untracked:  output/chr10_DCas20_5629_EA_REFimputedAndFiltered.nosex
+    Untracked:  output/chr10_DCas20_5629_EA_REFimputedAndFiltered.raw
+    Untracked:  output/chr10_DCas20_5629_EA_REFimputedAndFiltered.sitesWithAlleles
+    Untracked:  output/chr10_DCas20_5629_EA_REFimputedAndFiltered.vcf.gz
+    Untracked:  output/chr10_ImputationReferencePanel_StageVI_91119.alleleToCount
+    Untracked:  output/chr10_ImputationReferencePanel_StageVI_91119.bed
+    Untracked:  output/chr10_ImputationReferencePanel_StageVI_91119.bim
+    Untracked:  output/chr10_ImputationReferencePanel_StageVI_91119.fam
+    Untracked:  output/chr10_ImputationReferencePanel_StageVI_91119.log
+    Untracked:  output/chr10_ImputationReferencePanel_StageVI_91119.nosex
+    Untracked:  output/chr10_ImputationReferencePanel_StageVI_91119.raw
+    Untracked:  output/chr10_ImputationReferencePanel_StageVI_91119.sitesWithAlleles
+    Untracked:  output/chr11_DCas20_5629_EA_REFimputed.INFO
+    Untracked:  output/chr11_DCas20_5629_EA_REFimputed.hwe
+    Untracked:  output/chr11_DCas20_5629_EA_REFimputed.log
+    Untracked:  output/chr11_DCas20_5629_EA_REFimputed.sitesPassing
+    Untracked:  output/chr11_DCas20_5629_EA_REFimputed.vcf.gz
+    Untracked:  output/chr11_DCas20_5629_EA_REFimputedAndFiltered.alleleToCount
+    Untracked:  output/chr11_DCas20_5629_EA_REFimputedAndFiltered.bed
+    Untracked:  output/chr11_DCas20_5629_EA_REFimputedAndFiltered.bim
+    Untracked:  output/chr11_DCas20_5629_EA_REFimputedAndFiltered.fam
+    Untracked:  output/chr11_DCas20_5629_EA_REFimputedAndFiltered.log
+    Untracked:  output/chr11_DCas20_5629_EA_REFimputedAndFiltered.nosex
+    Untracked:  output/chr11_DCas20_5629_EA_REFimputedAndFiltered.raw
+    Untracked:  output/chr11_DCas20_5629_EA_REFimputedAndFiltered.sitesWithAlleles
+    Untracked:  output/chr11_DCas20_5629_EA_REFimputedAndFiltered.vcf.gz
+    Untracked:  output/chr11_ImputationReferencePanel_StageVI_91119.alleleToCount
+    Untracked:  output/chr11_ImputationReferencePanel_StageVI_91119.bed
+    Untracked:  output/chr11_ImputationReferencePanel_StageVI_91119.bim
+    Untracked:  output/chr11_ImputationReferencePanel_StageVI_91119.fam
+    Untracked:  output/chr11_ImputationReferencePanel_StageVI_91119.log
+    Untracked:  output/chr11_ImputationReferencePanel_StageVI_91119.nosex
+    Untracked:  output/chr11_ImputationReferencePanel_StageVI_91119.raw
+    Untracked:  output/chr11_ImputationReferencePanel_StageVI_91119.sitesWithAlleles
+    Untracked:  output/chr12_DCas20_5629_EA_REFimputed.INFO
+    Untracked:  output/chr12_DCas20_5629_EA_REFimputed.hwe
+    Untracked:  output/chr12_DCas20_5629_EA_REFimputed.log
+    Untracked:  output/chr12_DCas20_5629_EA_REFimputed.sitesPassing
+    Untracked:  output/chr12_DCas20_5629_EA_REFimputed.vcf.gz
+    Untracked:  output/chr12_DCas20_5629_EA_REFimputedAndFiltered.alleleToCount
+    Untracked:  output/chr12_DCas20_5629_EA_REFimputedAndFiltered.bed
+    Untracked:  output/chr12_DCas20_5629_EA_REFimputedAndFiltered.bim
+    Untracked:  output/chr12_DCas20_5629_EA_REFimputedAndFiltered.fam
+    Untracked:  output/chr12_DCas20_5629_EA_REFimputedAndFiltered.log
+    Untracked:  output/chr12_DCas20_5629_EA_REFimputedAndFiltered.nosex
+    Untracked:  output/chr12_DCas20_5629_EA_REFimputedAndFiltered.raw
+    Untracked:  output/chr12_DCas20_5629_EA_REFimputedAndFiltered.sitesWithAlleles
+    Untracked:  output/chr12_DCas20_5629_EA_REFimputedAndFiltered.vcf.gz
+    Untracked:  output/chr12_ImputationReferencePanel_StageVI_91119.alleleToCount
+    Untracked:  output/chr12_ImputationReferencePanel_StageVI_91119.bed
+    Untracked:  output/chr12_ImputationReferencePanel_StageVI_91119.bim
+    Untracked:  output/chr12_ImputationReferencePanel_StageVI_91119.fam
+    Untracked:  output/chr12_ImputationReferencePanel_StageVI_91119.log
+    Untracked:  output/chr12_ImputationReferencePanel_StageVI_91119.nosex
+    Untracked:  output/chr12_ImputationReferencePanel_StageVI_91119.raw
+    Untracked:  output/chr12_ImputationReferencePanel_StageVI_91119.sitesWithAlleles
+    Untracked:  output/chr13_DCas20_5629_EA_REFimputed.INFO
+    Untracked:  output/chr13_DCas20_5629_EA_REFimputed.hwe
+    Untracked:  output/chr13_DCas20_5629_EA_REFimputed.log
+    Untracked:  output/chr13_DCas20_5629_EA_REFimputed.sitesPassing
+    Untracked:  output/chr13_DCas20_5629_EA_REFimputed.vcf.gz
+    Untracked:  output/chr13_DCas20_5629_EA_REFimputedAndFiltered.alleleToCount
+    Untracked:  output/chr13_DCas20_5629_EA_REFimputedAndFiltered.bed
+    Untracked:  output/chr13_DCas20_5629_EA_REFimputedAndFiltered.bim
+    Untracked:  output/chr13_DCas20_5629_EA_REFimputedAndFiltered.fam
+    Untracked:  output/chr13_DCas20_5629_EA_REFimputedAndFiltered.log
+    Untracked:  output/chr13_DCas20_5629_EA_REFimputedAndFiltered.nosex
+    Untracked:  output/chr13_DCas20_5629_EA_REFimputedAndFiltered.raw
+    Untracked:  output/chr13_DCas20_5629_EA_REFimputedAndFiltered.sitesWithAlleles
+    Untracked:  output/chr13_DCas20_5629_EA_REFimputedAndFiltered.vcf.gz
+    Untracked:  output/chr13_ImputationReferencePanel_StageVI_91119.alleleToCount
+    Untracked:  output/chr13_ImputationReferencePanel_StageVI_91119.bed
+    Untracked:  output/chr13_ImputationReferencePanel_StageVI_91119.bim
+    Untracked:  output/chr13_ImputationReferencePanel_StageVI_91119.fam
+    Untracked:  output/chr13_ImputationReferencePanel_StageVI_91119.log
+    Untracked:  output/chr13_ImputationReferencePanel_StageVI_91119.nosex
+    Untracked:  output/chr13_ImputationReferencePanel_StageVI_91119.raw
+    Untracked:  output/chr13_ImputationReferencePanel_StageVI_91119.sitesWithAlleles
+    Untracked:  output/chr14_DCas20_5629_EA_REFimputed.INFO
+    Untracked:  output/chr14_DCas20_5629_EA_REFimputed.hwe
+    Untracked:  output/chr14_DCas20_5629_EA_REFimputed.log
+    Untracked:  output/chr14_DCas20_5629_EA_REFimputed.sitesPassing
+    Untracked:  output/chr14_DCas20_5629_EA_REFimputed.vcf.gz
+    Untracked:  output/chr14_DCas20_5629_EA_REFimputedAndFiltered.alleleToCount
+    Untracked:  output/chr14_DCas20_5629_EA_REFimputedAndFiltered.bed
+    Untracked:  output/chr14_DCas20_5629_EA_REFimputedAndFiltered.bim
+    Untracked:  output/chr14_DCas20_5629_EA_REFimputedAndFiltered.fam
+    Untracked:  output/chr14_DCas20_5629_EA_REFimputedAndFiltered.log
+    Untracked:  output/chr14_DCas20_5629_EA_REFimputedAndFiltered.nosex
+    Untracked:  output/chr14_DCas20_5629_EA_REFimputedAndFiltered.raw
+    Untracked:  output/chr14_DCas20_5629_EA_REFimputedAndFiltered.sitesWithAlleles
+    Untracked:  output/chr14_DCas20_5629_EA_REFimputedAndFiltered.vcf.gz
+    Untracked:  output/chr14_ImputationReferencePanel_StageVI_91119.alleleToCount
+    Untracked:  output/chr14_ImputationReferencePanel_StageVI_91119.bed
+    Untracked:  output/chr14_ImputationReferencePanel_StageVI_91119.bim
+    Untracked:  output/chr14_ImputationReferencePanel_StageVI_91119.fam
+    Untracked:  output/chr14_ImputationReferencePanel_StageVI_91119.log
+    Untracked:  output/chr14_ImputationReferencePanel_StageVI_91119.nosex
+    Untracked:  output/chr14_ImputationReferencePanel_StageVI_91119.raw
+    Untracked:  output/chr14_ImputationReferencePanel_StageVI_91119.sitesWithAlleles
+    Untracked:  output/chr15_DCas20_5629_EA_REFimputed.INFO
+    Untracked:  output/chr15_DCas20_5629_EA_REFimputed.hwe
+    Untracked:  output/chr15_DCas20_5629_EA_REFimputed.log
+    Untracked:  output/chr15_DCas20_5629_EA_REFimputed.sitesPassing
+    Untracked:  output/chr15_DCas20_5629_EA_REFimputed.vcf.gz
+    Untracked:  output/chr15_DCas20_5629_EA_REFimputedAndFiltered.alleleToCount
+    Untracked:  output/chr15_DCas20_5629_EA_REFimputedAndFiltered.bed
+    Untracked:  output/chr15_DCas20_5629_EA_REFimputedAndFiltered.bim
+    Untracked:  output/chr15_DCas20_5629_EA_REFimputedAndFiltered.fam
+    Untracked:  output/chr15_DCas20_5629_EA_REFimputedAndFiltered.log
+    Untracked:  output/chr15_DCas20_5629_EA_REFimputedAndFiltered.nosex
+    Untracked:  output/chr15_DCas20_5629_EA_REFimputedAndFiltered.raw
+    Untracked:  output/chr15_DCas20_5629_EA_REFimputedAndFiltered.sitesWithAlleles
+    Untracked:  output/chr15_DCas20_5629_EA_REFimputedAndFiltered.vcf.gz
+    Untracked:  output/chr15_ImputationReferencePanel_StageVI_91119.alleleToCount
+    Untracked:  output/chr15_ImputationReferencePanel_StageVI_91119.bed
+    Untracked:  output/chr15_ImputationReferencePanel_StageVI_91119.bim
+    Untracked:  output/chr15_ImputationReferencePanel_StageVI_91119.fam
+    Untracked:  output/chr15_ImputationReferencePanel_StageVI_91119.log
+    Untracked:  output/chr15_ImputationReferencePanel_StageVI_91119.nosex
+    Untracked:  output/chr15_ImputationReferencePanel_StageVI_91119.raw
+    Untracked:  output/chr15_ImputationReferencePanel_StageVI_91119.sitesWithAlleles
+    Untracked:  output/chr16_DCas20_5629_EA_REFimputed.INFO
+    Untracked:  output/chr16_DCas20_5629_EA_REFimputed.hwe
+    Untracked:  output/chr16_DCas20_5629_EA_REFimputed.log
+    Untracked:  output/chr16_DCas20_5629_EA_REFimputed.sitesPassing
+    Untracked:  output/chr16_DCas20_5629_EA_REFimputed.vcf.gz
+    Untracked:  output/chr16_DCas20_5629_EA_REFimputedAndFiltered.alleleToCount
+    Untracked:  output/chr16_DCas20_5629_EA_REFimputedAndFiltered.bed
+    Untracked:  output/chr16_DCas20_5629_EA_REFimputedAndFiltered.bim
+    Untracked:  output/chr16_DCas20_5629_EA_REFimputedAndFiltered.fam
+    Untracked:  output/chr16_DCas20_5629_EA_REFimputedAndFiltered.log
+    Untracked:  output/chr16_DCas20_5629_EA_REFimputedAndFiltered.nosex
+    Untracked:  output/chr16_DCas20_5629_EA_REFimputedAndFiltered.raw
+    Untracked:  output/chr16_DCas20_5629_EA_REFimputedAndFiltered.sitesWithAlleles
+    Untracked:  output/chr16_DCas20_5629_EA_REFimputedAndFiltered.vcf.gz
+    Untracked:  output/chr16_ImputationReferencePanel_StageVI_91119.alleleToCount
+    Untracked:  output/chr16_ImputationReferencePanel_StageVI_91119.bed
+    Untracked:  output/chr16_ImputationReferencePanel_StageVI_91119.bim
+    Untracked:  output/chr16_ImputationReferencePanel_StageVI_91119.fam
+    Untracked:  output/chr16_ImputationReferencePanel_StageVI_91119.log
+    Untracked:  output/chr16_ImputationReferencePanel_StageVI_91119.nosex
+    Untracked:  output/chr16_ImputationReferencePanel_StageVI_91119.raw
+    Untracked:  output/chr16_ImputationReferencePanel_StageVI_91119.sitesWithAlleles
+    Untracked:  output/chr17_DCas20_5629_EA_REFimputed.INFO
+    Untracked:  output/chr17_DCas20_5629_EA_REFimputed.hwe
+    Untracked:  output/chr17_DCas20_5629_EA_REFimputed.log
+    Untracked:  output/chr17_DCas20_5629_EA_REFimputed.sitesPassing
+    Untracked:  output/chr17_DCas20_5629_EA_REFimputed.vcf.gz
+    Untracked:  output/chr17_DCas20_5629_EA_REFimputedAndFiltered.alleleToCount
+    Untracked:  output/chr17_DCas20_5629_EA_REFimputedAndFiltered.bed
+    Untracked:  output/chr17_DCas20_5629_EA_REFimputedAndFiltered.bim
+    Untracked:  output/chr17_DCas20_5629_EA_REFimputedAndFiltered.fam
+    Untracked:  output/chr17_DCas20_5629_EA_REFimputedAndFiltered.log
+    Untracked:  output/chr17_DCas20_5629_EA_REFimputedAndFiltered.nosex
+    Untracked:  output/chr17_DCas20_5629_EA_REFimputedAndFiltered.raw
+    Untracked:  output/chr17_DCas20_5629_EA_REFimputedAndFiltered.sitesWithAlleles
+    Untracked:  output/chr17_DCas20_5629_EA_REFimputedAndFiltered.vcf.gz
+    Untracked:  output/chr17_ImputationReferencePanel_StageVI_91119.alleleToCount
+    Untracked:  output/chr17_ImputationReferencePanel_StageVI_91119.bed
+    Untracked:  output/chr17_ImputationReferencePanel_StageVI_91119.bim
+    Untracked:  output/chr17_ImputationReferencePanel_StageVI_91119.fam
+    Untracked:  output/chr17_ImputationReferencePanel_StageVI_91119.log
+    Untracked:  output/chr17_ImputationReferencePanel_StageVI_91119.nosex
+    Untracked:  output/chr17_ImputationReferencePanel_StageVI_91119.raw
+    Untracked:  output/chr17_ImputationReferencePanel_StageVI_91119.sitesWithAlleles
+    Untracked:  output/chr18_DCas20_5629_EA_REFimputed.INFO
+    Untracked:  output/chr18_DCas20_5629_EA_REFimputed.hwe
+    Untracked:  output/chr18_DCas20_5629_EA_REFimputed.log
+    Untracked:  output/chr18_DCas20_5629_EA_REFimputed.sitesPassing
+    Untracked:  output/chr18_DCas20_5629_EA_REFimputed.vcf.gz
+    Untracked:  output/chr18_DCas20_5629_EA_REFimputedAndFiltered.alleleToCount
+    Untracked:  output/chr18_DCas20_5629_EA_REFimputedAndFiltered.bed
+    Untracked:  output/chr18_DCas20_5629_EA_REFimputedAndFiltered.bim
+    Untracked:  output/chr18_DCas20_5629_EA_REFimputedAndFiltered.fam
+    Untracked:  output/chr18_DCas20_5629_EA_REFimputedAndFiltered.log
+    Untracked:  output/chr18_DCas20_5629_EA_REFimputedAndFiltered.nosex
+    Untracked:  output/chr18_DCas20_5629_EA_REFimputedAndFiltered.raw
+    Untracked:  output/chr18_DCas20_5629_EA_REFimputedAndFiltered.sitesWithAlleles
+    Untracked:  output/chr18_DCas20_5629_EA_REFimputedAndFiltered.vcf.gz
+    Untracked:  output/chr18_ImputationReferencePanel_StageVI_91119.alleleToCount
+    Untracked:  output/chr18_ImputationReferencePanel_StageVI_91119.bed
+    Untracked:  output/chr18_ImputationReferencePanel_StageVI_91119.bim
+    Untracked:  output/chr18_ImputationReferencePanel_StageVI_91119.fam
+    Untracked:  output/chr18_ImputationReferencePanel_StageVI_91119.log
+    Untracked:  output/chr18_ImputationReferencePanel_StageVI_91119.nosex
+    Untracked:  output/chr18_ImputationReferencePanel_StageVI_91119.raw
+    Untracked:  output/chr18_ImputationReferencePanel_StageVI_91119.sitesWithAlleles
+    Untracked:  output/chr1_DCas20_5629_EA_REFimputed.INFO
+    Untracked:  output/chr1_DCas20_5629_EA_REFimputed.hwe
+    Untracked:  output/chr1_DCas20_5629_EA_REFimputed.log
+    Untracked:  output/chr1_DCas20_5629_EA_REFimputed.sitesPassing
+    Untracked:  output/chr1_DCas20_5629_EA_REFimputed.vcf.gz
+    Untracked:  output/chr1_DCas20_5629_EA_REFimputedAndFiltered.alleleToCount
+    Untracked:  output/chr1_DCas20_5629_EA_REFimputedAndFiltered.bed
+    Untracked:  output/chr1_DCas20_5629_EA_REFimputedAndFiltered.bim
+    Untracked:  output/chr1_DCas20_5629_EA_REFimputedAndFiltered.fam
+    Untracked:  output/chr1_DCas20_5629_EA_REFimputedAndFiltered.log
+    Untracked:  output/chr1_DCas20_5629_EA_REFimputedAndFiltered.nosex
+    Untracked:  output/chr1_DCas20_5629_EA_REFimputedAndFiltered.raw
+    Untracked:  output/chr1_DCas20_5629_EA_REFimputedAndFiltered.sitesWithAlleles
+    Untracked:  output/chr1_DCas20_5629_EA_REFimputedAndFiltered.vcf.gz
+    Untracked:  output/chr1_ImputationReferencePanel_StageVI_91119.alleleToCount
+    Untracked:  output/chr1_ImputationReferencePanel_StageVI_91119.bed
+    Untracked:  output/chr1_ImputationReferencePanel_StageVI_91119.bim
+    Untracked:  output/chr1_ImputationReferencePanel_StageVI_91119.fam
+    Untracked:  output/chr1_ImputationReferencePanel_StageVI_91119.log
+    Untracked:  output/chr1_ImputationReferencePanel_StageVI_91119.nosex
+    Untracked:  output/chr1_ImputationReferencePanel_StageVI_91119.raw
+    Untracked:  output/chr1_ImputationReferencePanel_StageVI_91119.sitesWithAlleles
+    Untracked:  output/chr2_DCas20_5629_EA_REFimputed.INFO
+    Untracked:  output/chr2_DCas20_5629_EA_REFimputed.hwe
+    Untracked:  output/chr2_DCas20_5629_EA_REFimputed.log
+    Untracked:  output/chr2_DCas20_5629_EA_REFimputed.sitesPassing
+    Untracked:  output/chr2_DCas20_5629_EA_REFimputed.vcf.gz
+    Untracked:  output/chr2_DCas20_5629_EA_REFimputedAndFiltered.alleleToCount
+    Untracked:  output/chr2_DCas20_5629_EA_REFimputedAndFiltered.bed
+    Untracked:  output/chr2_DCas20_5629_EA_REFimputedAndFiltered.bim
+    Untracked:  output/chr2_DCas20_5629_EA_REFimputedAndFiltered.fam
+    Untracked:  output/chr2_DCas20_5629_EA_REFimputedAndFiltered.log
+    Untracked:  output/chr2_DCas20_5629_EA_REFimputedAndFiltered.nosex
+    Untracked:  output/chr2_DCas20_5629_EA_REFimputedAndFiltered.raw
+    Untracked:  output/chr2_DCas20_5629_EA_REFimputedAndFiltered.sitesWithAlleles
+    Untracked:  output/chr2_DCas20_5629_EA_REFimputedAndFiltered.vcf.gz
+    Untracked:  output/chr2_ImputationReferencePanel_StageVI_91119.alleleToCount
+    Untracked:  output/chr2_ImputationReferencePanel_StageVI_91119.bed
+    Untracked:  output/chr2_ImputationReferencePanel_StageVI_91119.bim
+    Untracked:  output/chr2_ImputationReferencePanel_StageVI_91119.fam
+    Untracked:  output/chr2_ImputationReferencePanel_StageVI_91119.log
+    Untracked:  output/chr2_ImputationReferencePanel_StageVI_91119.nosex
+    Untracked:  output/chr2_ImputationReferencePanel_StageVI_91119.raw
+    Untracked:  output/chr2_ImputationReferencePanel_StageVI_91119.sitesWithAlleles
+    Untracked:  output/chr3_DCas20_5629_EA_REFimputed.INFO
+    Untracked:  output/chr3_DCas20_5629_EA_REFimputed.hwe
+    Untracked:  output/chr3_DCas20_5629_EA_REFimputed.log
+    Untracked:  output/chr3_DCas20_5629_EA_REFimputed.sitesPassing
+    Untracked:  output/chr3_DCas20_5629_EA_REFimputed.vcf.gz
+    Untracked:  output/chr3_DCas20_5629_EA_REFimputedAndFiltered.alleleToCount
+    Untracked:  output/chr3_DCas20_5629_EA_REFimputedAndFiltered.bed
+    Untracked:  output/chr3_DCas20_5629_EA_REFimputedAndFiltered.bim
+    Untracked:  output/chr3_DCas20_5629_EA_REFimputedAndFiltered.fam
+    Untracked:  output/chr3_DCas20_5629_EA_REFimputedAndFiltered.log
+    Untracked:  output/chr3_DCas20_5629_EA_REFimputedAndFiltered.nosex
+    Untracked:  output/chr3_DCas20_5629_EA_REFimputedAndFiltered.raw
+    Untracked:  output/chr3_DCas20_5629_EA_REFimputedAndFiltered.sitesWithAlleles
+    Untracked:  output/chr3_DCas20_5629_EA_REFimputedAndFiltered.vcf.gz
+    Untracked:  output/chr3_ImputationReferencePanel_StageVI_91119.alleleToCount
+    Untracked:  output/chr3_ImputationReferencePanel_StageVI_91119.bed
+    Untracked:  output/chr3_ImputationReferencePanel_StageVI_91119.bim
+    Untracked:  output/chr3_ImputationReferencePanel_StageVI_91119.fam
+    Untracked:  output/chr3_ImputationReferencePanel_StageVI_91119.log
+    Untracked:  output/chr3_ImputationReferencePanel_StageVI_91119.nosex
+    Untracked:  output/chr3_ImputationReferencePanel_StageVI_91119.raw
+    Untracked:  output/chr3_ImputationReferencePanel_StageVI_91119.sitesWithAlleles
+    Untracked:  output/chr4_DCas20_5629_EA_REFimputed.INFO
+    Untracked:  output/chr4_DCas20_5629_EA_REFimputed.hwe
+    Untracked:  output/chr4_DCas20_5629_EA_REFimputed.log
+    Untracked:  output/chr4_DCas20_5629_EA_REFimputed.sitesPassing
+    Untracked:  output/chr4_DCas20_5629_EA_REFimputed.vcf.gz
+    Untracked:  output/chr4_DCas20_5629_EA_REFimputedAndFiltered.alleleToCount
+    Untracked:  output/chr4_DCas20_5629_EA_REFimputedAndFiltered.bed
+    Untracked:  output/chr4_DCas20_5629_EA_REFimputedAndFiltered.bim
+    Untracked:  output/chr4_DCas20_5629_EA_REFimputedAndFiltered.fam
+    Untracked:  output/chr4_DCas20_5629_EA_REFimputedAndFiltered.log
+    Untracked:  output/chr4_DCas20_5629_EA_REFimputedAndFiltered.nosex
+    Untracked:  output/chr4_DCas20_5629_EA_REFimputedAndFiltered.raw
+    Untracked:  output/chr4_DCas20_5629_EA_REFimputedAndFiltered.sitesWithAlleles
+    Untracked:  output/chr4_DCas20_5629_EA_REFimputedAndFiltered.vcf.gz
+    Untracked:  output/chr4_ImputationReferencePanel_StageVI_91119.alleleToCount
+    Untracked:  output/chr4_ImputationReferencePanel_StageVI_91119.bed
+    Untracked:  output/chr4_ImputationReferencePanel_StageVI_91119.bim
+    Untracked:  output/chr4_ImputationReferencePanel_StageVI_91119.fam
+    Untracked:  output/chr4_ImputationReferencePanel_StageVI_91119.log
+    Untracked:  output/chr4_ImputationReferencePanel_StageVI_91119.nosex
+    Untracked:  output/chr4_ImputationReferencePanel_StageVI_91119.raw
+    Untracked:  output/chr4_ImputationReferencePanel_StageVI_91119.sitesWithAlleles
+    Untracked:  output/chr5_DCas20_5629_EA_REFimputed.INFO
+    Untracked:  output/chr5_DCas20_5629_EA_REFimputed.hwe
+    Untracked:  output/chr5_DCas20_5629_EA_REFimputed.log
+    Untracked:  output/chr5_DCas20_5629_EA_REFimputed.sitesPassing
+    Untracked:  output/chr5_DCas20_5629_EA_REFimputed.vcf.gz
+    Untracked:  output/chr5_DCas20_5629_EA_REFimputedAndFiltered.alleleToCount
+    Untracked:  output/chr5_DCas20_5629_EA_REFimputedAndFiltered.bed
+    Untracked:  output/chr5_DCas20_5629_EA_REFimputedAndFiltered.bim
+    Untracked:  output/chr5_DCas20_5629_EA_REFimputedAndFiltered.fam
+    Untracked:  output/chr5_DCas20_5629_EA_REFimputedAndFiltered.log
+    Untracked:  output/chr5_DCas20_5629_EA_REFimputedAndFiltered.nosex
+    Untracked:  output/chr5_DCas20_5629_EA_REFimputedAndFiltered.raw
+    Untracked:  output/chr5_DCas20_5629_EA_REFimputedAndFiltered.sitesWithAlleles
+    Untracked:  output/chr5_DCas20_5629_EA_REFimputedAndFiltered.vcf.gz
+    Untracked:  output/chr5_ImputationReferencePanel_StageVI_91119.alleleToCount
+    Untracked:  output/chr5_ImputationReferencePanel_StageVI_91119.bed
+    Untracked:  output/chr5_ImputationReferencePanel_StageVI_91119.bim
+    Untracked:  output/chr5_ImputationReferencePanel_StageVI_91119.fam
+    Untracked:  output/chr5_ImputationReferencePanel_StageVI_91119.log
+    Untracked:  output/chr5_ImputationReferencePanel_StageVI_91119.nosex
+    Untracked:  output/chr5_ImputationReferencePanel_StageVI_91119.raw
+    Untracked:  output/chr5_ImputationReferencePanel_StageVI_91119.sitesWithAlleles
+    Untracked:  output/chr6_DCas20_5629_EA_REFimputed.INFO
+    Untracked:  output/chr6_DCas20_5629_EA_REFimputed.hwe
+    Untracked:  output/chr6_DCas20_5629_EA_REFimputed.log
+    Untracked:  output/chr6_DCas20_5629_EA_REFimputed.sitesPassing
+    Untracked:  output/chr6_DCas20_5629_EA_REFimputed.vcf.gz
+    Untracked:  output/chr6_DCas20_5629_EA_REFimputedAndFiltered.alleleToCount
+    Untracked:  output/chr6_DCas20_5629_EA_REFimputedAndFiltered.bed
+    Untracked:  output/chr6_DCas20_5629_EA_REFimputedAndFiltered.bim
+    Untracked:  output/chr6_DCas20_5629_EA_REFimputedAndFiltered.fam
+    Untracked:  output/chr6_DCas20_5629_EA_REFimputedAndFiltered.log
+    Untracked:  output/chr6_DCas20_5629_EA_REFimputedAndFiltered.nosex
+    Untracked:  output/chr6_DCas20_5629_EA_REFimputedAndFiltered.raw
+    Untracked:  output/chr6_DCas20_5629_EA_REFimputedAndFiltered.sitesWithAlleles
+    Untracked:  output/chr6_DCas20_5629_EA_REFimputedAndFiltered.vcf.gz
+    Untracked:  output/chr6_ImputationReferencePanel_StageVI_91119.alleleToCount
+    Untracked:  output/chr6_ImputationReferencePanel_StageVI_91119.bed
+    Untracked:  output/chr6_ImputationReferencePanel_StageVI_91119.bim
+    Untracked:  output/chr6_ImputationReferencePanel_StageVI_91119.fam
+    Untracked:  output/chr6_ImputationReferencePanel_StageVI_91119.log
+    Untracked:  output/chr6_ImputationReferencePanel_StageVI_91119.nosex
+    Untracked:  output/chr6_ImputationReferencePanel_StageVI_91119.raw
+    Untracked:  output/chr6_ImputationReferencePanel_StageVI_91119.sitesWithAlleles
+    Untracked:  output/chr7_DCas20_5629_EA_REFimputed.INFO
+    Untracked:  output/chr7_DCas20_5629_EA_REFimputed.hwe
+    Untracked:  output/chr7_DCas20_5629_EA_REFimputed.log
+    Untracked:  output/chr7_DCas20_5629_EA_REFimputed.sitesPassing
+    Untracked:  output/chr7_DCas20_5629_EA_REFimputed.vcf.gz
+    Untracked:  output/chr7_DCas20_5629_EA_REFimputedAndFiltered.alleleToCount
+    Untracked:  output/chr7_DCas20_5629_EA_REFimputedAndFiltered.bed
+    Untracked:  output/chr7_DCas20_5629_EA_REFimputedAndFiltered.bim
+    Untracked:  output/chr7_DCas20_5629_EA_REFimputedAndFiltered.fam
+    Untracked:  output/chr7_DCas20_5629_EA_REFimputedAndFiltered.log
+    Untracked:  output/chr7_DCas20_5629_EA_REFimputedAndFiltered.nosex
+    Untracked:  output/chr7_DCas20_5629_EA_REFimputedAndFiltered.raw
+    Untracked:  output/chr7_DCas20_5629_EA_REFimputedAndFiltered.sitesWithAlleles
+    Untracked:  output/chr7_DCas20_5629_EA_REFimputedAndFiltered.vcf.gz
+    Untracked:  output/chr7_ImputationReferencePanel_StageVI_91119.alleleToCount
+    Untracked:  output/chr7_ImputationReferencePanel_StageVI_91119.bed
+    Untracked:  output/chr7_ImputationReferencePanel_StageVI_91119.bim
+    Untracked:  output/chr7_ImputationReferencePanel_StageVI_91119.fam
+    Untracked:  output/chr7_ImputationReferencePanel_StageVI_91119.log
+    Untracked:  output/chr7_ImputationReferencePanel_StageVI_91119.nosex
+    Untracked:  output/chr7_ImputationReferencePanel_StageVI_91119.raw
+    Untracked:  output/chr7_ImputationReferencePanel_StageVI_91119.sitesWithAlleles
+    Untracked:  output/chr8_DCas20_5629_EA_REFimputed.INFO
+    Untracked:  output/chr8_DCas20_5629_EA_REFimputed.hwe
+    Untracked:  output/chr8_DCas20_5629_EA_REFimputed.log
+    Untracked:  output/chr8_DCas20_5629_EA_REFimputed.sitesPassing
+    Untracked:  output/chr8_DCas20_5629_EA_REFimputed.vcf.gz
+    Untracked:  output/chr8_DCas20_5629_EA_REFimputedAndFiltered.alleleToCount
+    Untracked:  output/chr8_DCas20_5629_EA_REFimputedAndFiltered.bed
+    Untracked:  output/chr8_DCas20_5629_EA_REFimputedAndFiltered.bim
+    Untracked:  output/chr8_DCas20_5629_EA_REFimputedAndFiltered.fam
+    Untracked:  output/chr8_DCas20_5629_EA_REFimputedAndFiltered.log
+    Untracked:  output/chr8_DCas20_5629_EA_REFimputedAndFiltered.nosex
+    Untracked:  output/chr8_DCas20_5629_EA_REFimputedAndFiltered.raw
+    Untracked:  output/chr8_DCas20_5629_EA_REFimputedAndFiltered.sitesWithAlleles
+    Untracked:  output/chr8_DCas20_5629_EA_REFimputedAndFiltered.vcf.gz
+    Untracked:  output/chr8_ImputationReferencePanel_StageVI_91119.alleleToCount
+    Untracked:  output/chr8_ImputationReferencePanel_StageVI_91119.bed
+    Untracked:  output/chr8_ImputationReferencePanel_StageVI_91119.bim
+    Untracked:  output/chr8_ImputationReferencePanel_StageVI_91119.fam
+    Untracked:  output/chr8_ImputationReferencePanel_StageVI_91119.log
+    Untracked:  output/chr8_ImputationReferencePanel_StageVI_91119.nosex
+    Untracked:  output/chr8_ImputationReferencePanel_StageVI_91119.raw
+    Untracked:  output/chr8_ImputationReferencePanel_StageVI_91119.sitesWithAlleles
+    Untracked:  output/chr9_DCas20_5629_EA_REFimputed.INFO
+    Untracked:  output/chr9_DCas20_5629_EA_REFimputed.hwe
+    Untracked:  output/chr9_DCas20_5629_EA_REFimputed.log
+    Untracked:  output/chr9_DCas20_5629_EA_REFimputed.sitesPassing
+    Untracked:  output/chr9_DCas20_5629_EA_REFimputed.vcf.gz
+    Untracked:  output/chr9_DCas20_5629_EA_REFimputedAndFiltered.alleleToCount
+    Untracked:  output/chr9_DCas20_5629_EA_REFimputedAndFiltered.bed
+    Untracked:  output/chr9_DCas20_5629_EA_REFimputedAndFiltered.bim
+    Untracked:  output/chr9_DCas20_5629_EA_REFimputedAndFiltered.fam
+    Untracked:  output/chr9_DCas20_5629_EA_REFimputedAndFiltered.log
+    Untracked:  output/chr9_DCas20_5629_EA_REFimputedAndFiltered.nosex
+    Untracked:  output/chr9_DCas20_5629_EA_REFimputedAndFiltered.raw
+    Untracked:  output/chr9_DCas20_5629_EA_REFimputedAndFiltered.sitesWithAlleles
+    Untracked:  output/chr9_DCas20_5629_EA_REFimputedAndFiltered.vcf.gz
+    Untracked:  output/chr9_ImputationReferencePanel_StageVI_91119.alleleToCount
+    Untracked:  output/chr9_ImputationReferencePanel_StageVI_91119.bed
+    Untracked:  output/chr9_ImputationReferencePanel_StageVI_91119.bim
+    Untracked:  output/chr9_ImputationReferencePanel_StageVI_91119.fam
+    Untracked:  output/chr9_ImputationReferencePanel_StageVI_91119.log
+    Untracked:  output/chr9_ImputationReferencePanel_StageVI_91119.nosex
+    Untracked:  output/chr9_ImputationReferencePanel_StageVI_91119.raw
+    Untracked:  output/chr9_ImputationReferencePanel_StageVI_91119.sitesWithAlleles
+    Untracked:  output/cvresults_ADE_2020Dec21.rds
+    Untracked:  output/cvresults_A_2020Dec21.rds
+    Untracked:  output/genomicPredictions_ModelADE_twostage_TARI_2020Dec21.rds
+    Untracked:  output/genomicPredictions_ModelA_twostage_TARI_2020Dec21.rds
+    Untracked:  output/germplasmName_to_DNAname_matches_TARI_2020Dec22.csv
+    Untracked:  output/maxNOHAV_byStudy.csv
+    Untracked:  output/rownames_DosageMatrix_DCas20_5629_EA_REFimputedAndFiltered.csv
+    Untracked:  output/rownames_DosageMatrix_ImputationReferencePanel_StageVI_91119.csv
+    Untracked:  output/tari_blupsForModelTraining_twostage_asreml_2020Dec20.rds
+    Untracked:  workflowr_log.R
+
+</code></pre>
+<p>
+Note that any generated files, e.g. HTML, png, CSS, etc., are not included in this status report because it is ok for generated content to have uncommitted changes.
+</p>
+</div>
+</div>
+</div>
+</div>
+<hr>
+</div>
+<div id="versions" class="tab-pane fade">
+
+<p>
+These are the previous versions of the repository in which changes were made to the R Markdown (<code>analysis/01-cleanTPdata.Rmd</code>) and HTML (<code>docs/01-cleanTPdata.html</code>) files. If you’ve configured a remote Git repository (see <code>?wflow_git_remote</code>), click on the hyperlinks in the table below to view the files as they were in that past version.
+</p>
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+File
+</th>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+<th>
+Message
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+fae176a
+</td>
+<td>
+wolfemd
+</td>
+<td>
+2020-12-23
+</td>
+<td>
+Publish the first set of analyses and files for TARI 2020 GS.
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<hr>
+</div>
+</div>
+</div>
+<p>Follow outlined GenomicPredictionChecklist and previous pipeline to process cassavabase data for ultimate genomic prediction.</p>
+<p>Below we will clean and format training data.</p>
+<ul>
+<li>Inputs: “Raw” field trial data</li>
+<li>Expected outputs: “Cleaned” field trial data</li>
+</ul>
+<div id="user-input-cassavabase-download" class="section level1">
+<h1>[User input] Cassavabase download</h1>
+<p>Downloaded <strong>all</strong> TARI field trials.</p>
+<ol style="list-style-type: decimal">
+<li><a href="https://www.cassavabase.org/breeders/search">Cassavabase search wizard</a>:<br />
+</li>
+<li>Selected <em>all</em> TARI trials currently available. Make a list. Named it <strong>ALL_TARI_TRIALS_2020Dec18</strong>.</li>
+<li>Go to <strong>Manage</strong> –&gt; <strong>Download</strong> <a href="https://www.cassavabase.org/breeders/download">here</a>. Download phenotypes (plot-basis only) and meta-data as CSV using the corresponding boxes / drop-downs.</li>
+<li>Store flatfiles, unaltered in directory <code>data/DatabaseDownload_2020Dec18/</code>.</li>
+</ol>
+<ul>
+<li><strong>TRIED TO DOWNLOAD META-DATA, BUT DB IS GIVING “SERVER ERROR”</strong></li>
+</ul>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">rm</span>(<span class="at">list =</span> <span class="fu">ls</span>())</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(magrittr)</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(here<span class="sc">::</span><span class="fu">here</span>(<span class="st">&quot;code&quot;</span>, <span class="st">&quot;gsFunctions.R&quot;</span>))</span></code></pre></div>
+<p>Read DB data directly from the Cassavabase FTP server.</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>dbdata <span class="ot">&lt;-</span> <span class="fu">readDBdata</span>(<span class="at">phenotypeFile =</span> here<span class="sc">::</span><span class="fu">here</span>(<span class="st">&quot;data/DatabaseDownload_2020Dec18&quot;</span>, </span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>    <span class="st">&quot;2020-12-18T183047phenotype_download.csv&quot;</span>), <span class="at">metadataFile =</span> here<span class="sc">::</span><span class="fu">here</span>(<span class="st">&quot;data/DatabaseDownload_2020Dec18&quot;</span>, </span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>    <span class="st">&quot;2020-12-18T174951metadata_download.csv&quot;</span>))</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="co"># meta&lt;-read.csv(here::here(&#39;data/DatabaseDownload_2020Dec18&#39;,&#39;2020-12-18T174951metadata_download.csv&#39;),stringsAsFactors</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="co"># = F)</span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>dbdata <span class="sc">%&lt;&gt;%</span> <span class="fu">mutate</span>(<span class="at">locationName =</span> <span class="fu">ifelse</span>(locationName <span class="sc">==</span> <span class="st">&quot;bwanga&quot;</span>, <span class="st">&quot;Bwanga&quot;</span>, locationName), </span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">locationName =</span> <span class="fu">ifelse</span>(locationName <span class="sc">==</span> <span class="st">&quot;kasulu&quot;</span>, <span class="st">&quot;Kasulu&quot;</span>, locationName))</span></code></pre></div>
+</div>
+<div id="group-and-select-trials-to-analyze" class="section level1">
+<h1>Group and select trials to analyze</h1>
+<p>Make TrialType Variable</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>dbdata <span class="ot">&lt;-</span> <span class="fu">makeTrialTypeVar</span>(dbdata)</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>dbdata <span class="sc">%&gt;%</span> <span class="fu">count</span>(TrialType) <span class="sc">%&gt;%</span> rmarkdown<span class="sc">::</span><span class="fu">paged_table</span>()</span></code></pre></div>
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":["TrialType"],"name":[1],"type":["chr"],"align":["left"]},{"label":["n"],"name":[2],"type":["int"],"align":["right"]}],"data":[{"1":"AYT","2":"2335"},{"1":"CET","2":"4119"},{"1":"CrossingBlock","2":"392"},{"1":"PYT","2":"2612"},{"1":"RegionalTrial","2":"1366"},{"1":"UYT","2":"1504"},{"1":"VarietyTrial","2":"390"},{"1":"NA","2":"10339"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+<div id="trials-not-included" class="section level2">
+<h2>Trials NOT included</h2>
+<p>Looking at the <strong>studyName</strong>’s of trials getting NA for TrialType, which can’t be classified at present.</p>
+<p>Here is the list of trials I am <em>not</em> including.</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>dbdata <span class="sc">%&gt;%</span> <span class="fu">filter</span>(<span class="fu">is.na</span>(TrialType)) <span class="sc">%$%</span> <span class="fu">unique</span>(studyName) <span class="sc">%&gt;%</span> <span class="fu">write.csv</span>(., <span class="at">file =</span> here<span class="sc">::</span><span class="fu">here</span>(<span class="st">&quot;output&quot;</span>, </span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>    <span class="st">&quot;TARI_trials_NOT_identifiable.csv&quot;</span>), <span class="at">row.names =</span> F)</span></code></pre></div>
+<p>Wrote to disk a CSV in the <code>output/</code> sub-directory.</p>
+<p>Should any of these trials have been included?</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>dbdata <span class="sc">%&gt;%</span> <span class="fu">filter</span>(<span class="fu">is.na</span>(TrialType)) <span class="sc">%$%</span> <span class="fu">unique</span>(studyName)</span></code></pre></div>
+<pre><code> [1] &quot;17uytbwanga&quot;                       &quot;18_CBSD_IMMUNE&quot;                   
+ [3] &quot;18_NAMIKONGA_S1&quot;                   &quot;18_NMKxAR37-80&quot;                   
+ [5] &quot;19_Seedling_Nursery_Chambezi&quot;      &quot;2020_AYT_TP_BW&quot;                   
+ [7] &quot;2020_CBSD_IMMUNE_BUN&quot;              &quot;2020_CBSD_IMMUNE_SEEDLING_NURSERY&quot;
+ [9] &quot;2020_CBSD_IMMUNE_UKE&quot;              &quot;2020_CBSD_IMMUNE_UKG&quot;             
+[11] &quot;2020_GWAS_BUNDA&quot;                   &quot;2020_GWAS_Ukerewe&quot;                
+[13] &quot;2020_GWAS_UKIRIGURU&quot;               &quot;2020_GxE_UKG&quot;                     
+[15] &quot;2020_UYT1C_GAIRO&quot;                  &quot;95_iita_tz_materials&quot;             
+[17] &quot;ACCESSION FOR GENOTYPING&quot;          &quot;bunda 2018&quot;                       
+[19] &quot;CET_1_2016&quot;                        &quot;GXE KIBAHA&quot;                       
+[21] &quot;IITA GENOTYPING  PLATE&quot;            &quot;ilonga_trial&quot;                     
+[23] &quot;KIBAHA GERMPLASM&quot;                  &quot;local_germplam_Southern&quot;          
+[25] &quot;Local_germplasm_eastern&quot;           &quot;Local_germplasm_islands&quot;          
+[27] &quot;local_germplasm_northern&quot;          &quot;Local_germplasm_Nothern&quot;          
+[29] &quot;Local_germplasm_SMS&quot;               &quot;LOCAL VARIETIES&quot;                  
+[31] &quot;MULTILOCATIONAL_EZ_TP2&quot;            &quot;NDL_OP_UK&quot;                        
+[33] &quot;NEW_LOCAL_GERMPLASM_UKIRIGURU&quot;     &quot;NGTZ18KBH_AYT5&quot;                   
+[35] &quot;NGTZ18KBH_SEEDLING&quot;                &quot;NGTZ_CBSDIMMUNE_16VAR_CHAMBZ&quot;     
+[37] &quot;NGTZKBH-2018-19-UYT2&quot;              &quot;Old_local_germplasm_ukiriguru&quot;    
+[39] &quot;QC_CET_1&quot;                          &quot;QC_CET_2&quot;                         
+[41] &quot;QC_PYT&quot;                            &quot;Seedlings_Kibaha&quot;                 
+[43] &quot;TARI KIBAHA GERMPLASM&quot;            </code></pre>
+</div>
+<div id="remove-unclassified-trials" class="section level2">
+<h2>Remove unclassified trials</h2>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>dbdata <span class="sc">%&lt;&gt;%</span> <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">is.na</span>(TrialType))</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>dbdata <span class="sc">%&gt;%</span> <span class="fu">group_by</span>(programName) <span class="sc">%&gt;%</span> <span class="fu">summarize</span>(<span class="at">N =</span> <span class="fu">n</span>()) <span class="sc">%&gt;%</span> rmarkdown<span class="sc">::</span><span class="fu">paged_table</span>()</span></code></pre></div>
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":["programName"],"name":[1],"type":["chr"],"align":["left"]},{"label":["N"],"name":[2],"type":["int"],"align":["right"]}],"data":[{"1":"TARI","2":"12718"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 12718 plots</span></span></code></pre></div>
+<p>Making a table of abbreviations for renaming</p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>traitabbrevs<span class="ot">&lt;-</span><span class="fu">tribble</span>(<span class="sc">~</span>TraitAbbrev,<span class="sc">~</span>TraitName,</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>        <span class="st">&quot;CMD1S&quot;</span>,<span class="st">&quot;cassava.mosaic.disease.severity.1.month.evaluation.CO_334.0000191&quot;</span>,</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>        <span class="st">&quot;CMD3S&quot;</span>,<span class="st">&quot;cassava.mosaic.disease.severity.3.month.evaluation.CO_334.0000192&quot;</span>,</span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>        <span class="st">&quot;CMD6S&quot;</span>,<span class="st">&quot;cassava.mosaic.disease.severity.6.month.evaluation.CO_334.0000194&quot;</span>,</span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>        <span class="st">&quot;CMD9S&quot;</span>,<span class="st">&quot;cassava.mosaic.disease.severity.9.month.evaluation.CO_334.0000193&quot;</span>,</span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>        <span class="st">&quot;CBSD3S&quot;</span>,<span class="st">&quot;cassava.brown.streak.disease.leaf.severity.3.month.evaluation.CO_334.0000204&quot;</span>,</span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>        <span class="st">&quot;CBSD6S&quot;</span>,<span class="st">&quot;cassava.brown.streak.disease.leaf.severity.6.month.evaluation.CO_334.0000205&quot;</span>,</span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>        <span class="st">&quot;CBSD9S&quot;</span>,<span class="st">&quot;cassava.brown.streak.disease.leaf.severity.9.month.evaluation.CO_334.0000206&quot;</span>,</span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a>        <span class="st">&quot;CBSDRS&quot;</span>,<span class="st">&quot;cassava.brown.streak.disease.root.severity.12.month.evaluation.CO_334.0000201&quot;</span>,</span>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a>        <span class="co">#&quot;CGM&quot;,&quot;Cassava.green.mite.severity.CO_334.0000033&quot;,</span></span>
+<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a>        <span class="st">&quot;CGMS1&quot;</span>,<span class="st">&quot;cassava.green.mite.severity.first.evaluation.CO_334.0000189&quot;</span>,</span>
+<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a>        <span class="st">&quot;CGMS2&quot;</span>,<span class="st">&quot;cassava.green.mite.severity.second.evaluation.CO_334.0000190&quot;</span>,</span>
+<span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a>        <span class="st">&quot;DM&quot;</span>,<span class="st">&quot;dry.matter.content.by.specific.gravity.method.CO_334.0000160&quot;</span>,</span>
+<span id="cb9-14"><a href="#cb9-14" aria-hidden="true" tabindex="-1"></a>      <span class="co"># &quot;DM&quot;,&quot;dry.matter.content.percentage.CO_334.0000092&quot;,</span></span>
+<span id="cb9-15"><a href="#cb9-15" aria-hidden="true" tabindex="-1"></a>        <span class="st">&quot;PLTHT&quot;</span>,<span class="st">&quot;plant.height.measurement.in.cm.CO_334.0000018&quot;</span>,</span>
+<span id="cb9-16"><a href="#cb9-16" aria-hidden="true" tabindex="-1"></a>        <span class="st">&quot;BRNHT1&quot;</span>,<span class="st">&quot;first.apical.branch.height.measurement.in.cm.CO_334.0000106&quot;</span>,</span>
+<span id="cb9-17"><a href="#cb9-17" aria-hidden="true" tabindex="-1"></a>        <span class="st">&quot;SHTWT&quot;</span>,<span class="st">&quot;fresh.shoot.weight.measurement.in.kg.per.plot.CO_334.0000016&quot;</span>,</span>
+<span id="cb9-18"><a href="#cb9-18" aria-hidden="true" tabindex="-1"></a>        <span class="st">&quot;RTWT&quot;</span>,<span class="st">&quot;fresh.storage.root.weight.per.plot.CO_334.0000012&quot;</span>,</span>
+<span id="cb9-19"><a href="#cb9-19" aria-hidden="true" tabindex="-1"></a>        <span class="st">&quot;RTNO&quot;</span>,<span class="st">&quot;root.number.counting.CO_334.0000011&quot;</span>,</span>
+<span id="cb9-20"><a href="#cb9-20" aria-hidden="true" tabindex="-1"></a>        <span class="st">&quot;TCHART&quot;</span>,<span class="st">&quot;total.carotenoid.by.chart.1.8.CO_334.0000161&quot;</span>,</span>
+<span id="cb9-21"><a href="#cb9-21" aria-hidden="true" tabindex="-1"></a>        <span class="st">&quot;NOHAV&quot;</span>,<span class="st">&quot;plant.stands.harvested.counting.CO_334.0000010&quot;</span>)</span>
+<span id="cb9-22"><a href="#cb9-22" aria-hidden="true" tabindex="-1"></a>traitabbrevs <span class="sc">%&gt;%</span> rmarkdown<span class="sc">::</span><span class="fu">paged_table</span>()</span></code></pre></div>
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":["TraitAbbrev"],"name":[1],"type":["chr"],"align":["left"]},{"label":["TraitName"],"name":[2],"type":["chr"],"align":["left"]}],"data":[{"1":"CMD1S","2":"cassava.mosaic.disease.severity.1.month.evaluation.CO_334.0000191"},{"1":"CMD3S","2":"cassava.mosaic.disease.severity.3.month.evaluation.CO_334.0000192"},{"1":"CMD6S","2":"cassava.mosaic.disease.severity.6.month.evaluation.CO_334.0000194"},{"1":"CMD9S","2":"cassava.mosaic.disease.severity.9.month.evaluation.CO_334.0000193"},{"1":"CBSD3S","2":"cassava.brown.streak.disease.leaf.severity.3.month.evaluation.CO_334.0000204"},{"1":"CBSD6S","2":"cassava.brown.streak.disease.leaf.severity.6.month.evaluation.CO_334.0000205"},{"1":"CBSD9S","2":"cassava.brown.streak.disease.leaf.severity.9.month.evaluation.CO_334.0000206"},{"1":"CBSDRS","2":"cassava.brown.streak.disease.root.severity.12.month.evaluation.CO_334.0000201"},{"1":"CGMS1","2":"cassava.green.mite.severity.first.evaluation.CO_334.0000189"},{"1":"CGMS2","2":"cassava.green.mite.severity.second.evaluation.CO_334.0000190"},{"1":"DM","2":"dry.matter.content.by.specific.gravity.method.CO_334.0000160"},{"1":"PLTHT","2":"plant.height.measurement.in.cm.CO_334.0000018"},{"1":"BRNHT1","2":"first.apical.branch.height.measurement.in.cm.CO_334.0000106"},{"1":"SHTWT","2":"fresh.shoot.weight.measurement.in.kg.per.plot.CO_334.0000016"},{"1":"RTWT","2":"fresh.storage.root.weight.per.plot.CO_334.0000012"},{"1":"RTNO","2":"root.number.counting.CO_334.0000011"},{"1":"TCHART","2":"total.carotenoid.by.chart.1.8.CO_334.0000161"},{"1":"NOHAV","2":"plant.stands.harvested.counting.CO_334.0000010"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="co"># dbdata %&gt;% colnames(.) %&gt;% grep(&quot;fresh.root&quot;,.,value=T)</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="co"># dbdata$cassava.green.mite.severity.first.evaluation.CO_334.0000189 %&gt;% summary</span></span></code></pre></div>
+<p>Run function <code>renameAndSelectCols()</code> to rename columns and remove everything unecessary</p>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>dbdata <span class="ot">&lt;-</span> <span class="fu">renameAndSelectCols</span>(traitabbrevs, <span class="at">indata =</span> dbdata, <span class="at">customColsToKeep =</span> <span class="st">&quot;TrialType&quot;</span>)</span></code></pre></div>
+</div>
+</div>
+<div id="qc-trait-values" class="section level1">
+<h1>QC Trait values</h1>
+<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>dbdata<span class="ot">&lt;-</span>dbdata <span class="sc">%&gt;%</span> </span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="co">#CMD1S=ifelse(CMD1S&lt;1 | CMD1S&gt;5,NA,CMD1S),</span></span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>         <span class="at">CMD3S=</span><span class="fu">ifelse</span>(CMD3S<span class="sc">&lt;</span><span class="dv">1</span> <span class="sc">|</span> CMD3S<span class="sc">&gt;</span><span class="dv">5</span>,<span class="cn">NA</span>,CMD3S),</span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>         <span class="at">CMD6S=</span><span class="fu">ifelse</span>(CMD6S<span class="sc">&lt;</span><span class="dv">1</span> <span class="sc">|</span> CMD6S<span class="sc">&gt;</span><span class="dv">5</span>,<span class="cn">NA</span>,CMD6S),</span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>         <span class="at">CMD9S=</span><span class="fu">ifelse</span>(CMD9S<span class="sc">&lt;</span><span class="dv">1</span> <span class="sc">|</span> CMD9S<span class="sc">&gt;</span><span class="dv">5</span>,<span class="cn">NA</span>,CMD9S),</span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>         <span class="at">CBSD3S=</span><span class="fu">ifelse</span>(CBSD3S<span class="sc">&lt;</span><span class="dv">1</span> <span class="sc">|</span> CBSD3S<span class="sc">&gt;</span><span class="dv">5</span>,<span class="cn">NA</span>,CBSD3S),</span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>         <span class="at">CBSD6S=</span><span class="fu">ifelse</span>(CBSD6S<span class="sc">&lt;</span><span class="dv">1</span> <span class="sc">|</span> CBSD6S<span class="sc">&gt;</span><span class="dv">5</span>,<span class="cn">NA</span>,CBSD6S),</span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a>         <span class="at">CBSD9S=</span><span class="fu">ifelse</span>(CBSD9S<span class="sc">&lt;</span><span class="dv">1</span> <span class="sc">|</span> CBSD9S<span class="sc">&gt;</span><span class="dv">5</span>,<span class="cn">NA</span>,CMD9S),</span>
+<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a>         <span class="at">CBSDRS=</span><span class="fu">ifelse</span>(CBSDRS<span class="sc">&lt;</span><span class="dv">1</span> <span class="sc">|</span> CBSDRS<span class="sc">&gt;</span><span class="dv">5</span>,<span class="cn">NA</span>,CBSDRS),</span>
+<span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a>         <span class="co">#CGM=ifelse(CGM&lt;1 | CGM&gt;5,NA,CGM),</span></span>
+<span id="cb12-11"><a href="#cb12-11" aria-hidden="true" tabindex="-1"></a>         <span class="at">CGMS1=</span><span class="fu">ifelse</span>(CGMS1<span class="sc">&lt;</span><span class="dv">1</span> <span class="sc">|</span> CGMS1<span class="sc">&gt;</span><span class="dv">5</span>,<span class="cn">NA</span>,CGMS1),</span>
+<span id="cb12-12"><a href="#cb12-12" aria-hidden="true" tabindex="-1"></a>         <span class="at">CGMS2=</span><span class="fu">ifelse</span>(CGMS2<span class="sc">&lt;</span><span class="dv">1</span> <span class="sc">|</span> CGMS2<span class="sc">&gt;</span><span class="dv">5</span>,<span class="cn">NA</span>,CGMS2),</span>
+<span id="cb12-13"><a href="#cb12-13" aria-hidden="true" tabindex="-1"></a>         <span class="at">DM=</span><span class="fu">ifelse</span>(DM<span class="sc">&gt;</span><span class="dv">100</span> <span class="sc">|</span> DM<span class="sc">&lt;=</span><span class="dv">0</span>,<span class="cn">NA</span>,DM),</span>
+<span id="cb12-14"><a href="#cb12-14" aria-hidden="true" tabindex="-1"></a>         <span class="at">RTWT=</span><span class="fu">ifelse</span>(RTWT<span class="sc">==</span><span class="dv">0</span> <span class="sc">|</span> NOHAV<span class="sc">==</span><span class="dv">0</span> <span class="sc">|</span> <span class="fu">is.na</span>(NOHAV),<span class="cn">NA</span>,RTWT),</span>
+<span id="cb12-15"><a href="#cb12-15" aria-hidden="true" tabindex="-1"></a>         <span class="at">SHTWT=</span><span class="fu">ifelse</span>(SHTWT<span class="sc">==</span><span class="dv">0</span> <span class="sc">|</span> NOHAV<span class="sc">==</span><span class="dv">0</span> <span class="sc">|</span> <span class="fu">is.na</span>(NOHAV),<span class="cn">NA</span>,SHTWT),</span>
+<span id="cb12-16"><a href="#cb12-16" aria-hidden="true" tabindex="-1"></a>         <span class="at">RTNO=</span><span class="fu">ifelse</span>(RTNO<span class="sc">==</span><span class="dv">0</span> <span class="sc">|</span> NOHAV<span class="sc">==</span><span class="dv">0</span> <span class="sc">|</span> <span class="fu">is.na</span>(NOHAV),<span class="cn">NA</span>,RTNO),</span>
+<span id="cb12-17"><a href="#cb12-17" aria-hidden="true" tabindex="-1"></a>         <span class="at">NOHAV=</span><span class="fu">ifelse</span>(NOHAV<span class="sc">==</span><span class="dv">0</span>,<span class="cn">NA</span>,NOHAV),</span>
+<span id="cb12-18"><a href="#cb12-18" aria-hidden="true" tabindex="-1"></a>         <span class="at">NOHAV=</span><span class="fu">ifelse</span>(NOHAV<span class="sc">&gt;</span><span class="dv">42</span>,<span class="cn">NA</span>,NOHAV),</span>
+<span id="cb12-19"><a href="#cb12-19" aria-hidden="true" tabindex="-1"></a>         <span class="at">RTNO=</span><span class="fu">ifelse</span>(<span class="sc">!</span>RTNO <span class="sc">%in%</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">10000</span>,<span class="cn">NA</span>,RTNO))</span></code></pre></div>
+</div>
+<div id="post-qc-traits" class="section level1">
+<h1>Post-QC traits</h1>
+<div id="harvest-index" class="section level2">
+<h2>Harvest index</h2>
+<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>dbdata <span class="ot">&lt;-</span> dbdata <span class="sc">%&gt;%</span> <span class="fu">mutate</span>(<span class="at">HI =</span> RTWT<span class="sc">/</span>(RTWT <span class="sc">+</span> SHTWT))</span></code></pre></div>
+</div>
+<div id="unit-area-traits" class="section level2">
+<h2>Unit area traits</h2>
+<p>I anticipate this will not be necessary as it will be computed before or during data upload.</p>
+<p>For calculating fresh root yield:</p>
+<ol style="list-style-type: decimal">
+<li><strong>PlotSpacing:</strong> Area in <span class="math inline">\(m^2\)</span> per plant. plotWidth and plotLength metadata would hypothetically provide this info, but is missing for vast majority of trials. Therefore, use info from Fola.</li>
+<li><strong>maxNOHAV:</strong> Instead of ExpectedNOHAV. Need to know the max number of plants in the area harvested. For some trials, only the inner (or “net”) plot is harvested, therefore the PlantsPerPlot meta-variable will not suffice. Besides, the PlantsPerPlot information is missing for the vast majority of trials. Instead, use observed max(NOHAV) for each trial. We use this plus the PlotSpacing to calc. the area over which the RTWT was measured. During analysis, variation in the actual number of plants harvested will be accounted for.</li>
+</ol>
+<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>dbdata <span class="ot">&lt;-</span> dbdata <span class="sc">%&gt;%</span> <span class="fu">mutate</span>(<span class="at">PlotSpacing =</span> <span class="fu">ifelse</span>(programName <span class="sc">!=</span> <span class="st">&quot;IITA&quot;</span>, <span class="dv">1</span>, <span class="fu">ifelse</span>(studyYear <span class="sc">&lt;</span> </span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>    <span class="dv">2013</span>, <span class="dv">1</span>, <span class="fu">ifelse</span>(TrialType <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">&quot;CET&quot;</span>, <span class="st">&quot;GeneticGain&quot;</span>, <span class="st">&quot;ExpCET&quot;</span>), <span class="dv">1</span>, <span class="fl">0.8</span>))))</span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>maxNOHAV_byStudy <span class="ot">&lt;-</span> dbdata <span class="sc">%&gt;%</span> <span class="fu">group_by</span>(programName, locationName, studyYear, studyName, </span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>    studyDesign) <span class="sc">%&gt;%</span> <span class="fu">summarize</span>(<span class="at">MaxNOHAV =</span> <span class="fu">max</span>(NOHAV, <span class="at">na.rm =</span> T)) <span class="sc">%&gt;%</span> <span class="fu">ungroup</span>() <span class="sc">%&gt;%</span> </span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="at">MaxNOHAV =</span> <span class="fu">ifelse</span>(MaxNOHAV <span class="sc">==</span> <span class="st">&quot;-Inf&quot;</span>, <span class="cn">NA</span>, MaxNOHAV))</span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a><span class="fu">write.csv</span>(maxNOHAV_byStudy <span class="sc">%&gt;%</span> <span class="fu">arrange</span>(studyYear), <span class="at">file =</span> here<span class="sc">::</span><span class="fu">here</span>(<span class="st">&quot;output&quot;</span>, <span class="st">&quot;maxNOHAV_byStudy.csv&quot;</span>), </span>
+<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">row.names =</span> F)</span></code></pre></div>
+<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="co"># I log transform yield traits to satisfy homoskedastic residuals assumption of</span></span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a><span class="co"># linear mixed models</span></span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>dbdata <span class="ot">&lt;-</span> <span class="fu">left_join</span>(dbdata, maxNOHAV_byStudy) <span class="sc">%&gt;%</span> <span class="fu">mutate</span>(<span class="at">RTWT =</span> <span class="fu">ifelse</span>(NOHAV <span class="sc">&gt;</span> MaxNOHAV, </span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>    <span class="cn">NA</span>, RTWT), <span class="at">SHTWT =</span> <span class="fu">ifelse</span>(NOHAV <span class="sc">&gt;</span> MaxNOHAV, <span class="cn">NA</span>, SHTWT), <span class="at">RTNO =</span> <span class="fu">ifelse</span>(NOHAV <span class="sc">&gt;</span> </span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>    MaxNOHAV, <span class="cn">NA</span>, RTNO), <span class="at">HI =</span> <span class="fu">ifelse</span>(NOHAV <span class="sc">&gt;</span> MaxNOHAV, <span class="cn">NA</span>, HI), <span class="at">FYLD =</span> RTWT<span class="sc">/</span>(MaxNOHAV <span class="sc">*</span> </span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>    PlotSpacing) <span class="sc">*</span> <span class="dv">10</span>, <span class="at">DYLD =</span> FYLD <span class="sc">*</span> (DM<span class="sc">/</span><span class="dv">100</span>), <span class="at">logFYLD =</span> <span class="fu">log</span>(FYLD), <span class="at">logDYLD =</span> <span class="fu">log</span>(DYLD), </span>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">logTOPYLD =</span> <span class="fu">log</span>(SHTWT<span class="sc">/</span>(MaxNOHAV <span class="sc">*</span> PlotSpacing) <span class="sc">*</span> <span class="dv">10</span>), <span class="at">logRTNO =</span> <span class="fu">log</span>(RTNO), <span class="at">PropNOHAV =</span> NOHAV<span class="sc">/</span>MaxNOHAV)</span>
+<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a><span class="co"># remove non transformed / per-plot (instead of per area) traits</span></span>
+<span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a>dbdata <span class="sc">%&lt;&gt;%</span> <span class="fu">select</span>(<span class="sc">-</span>RTWT, <span class="sc">-</span>SHTWT, <span class="sc">-</span>RTNO, <span class="sc">-</span>FYLD, <span class="sc">-</span>DYLD)</span></code></pre></div>
+</div>
+<div id="season-wide-mean-disease-severity" class="section level2">
+<h2>Season-wide mean disease severity</h2>
+<div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>dbdata <span class="ot">&lt;-</span> dbdata <span class="sc">%&gt;%</span> <span class="fu">mutate</span>(<span class="at">MCMDS =</span> <span class="fu">rowMeans</span>(.[, <span class="fu">c</span>(<span class="st">&quot;CMD3S&quot;</span>, <span class="st">&quot;CMD6S&quot;</span>, <span class="st">&quot;CMD9S&quot;</span>)], <span class="at">na.rm =</span> T), </span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>    <span class="at">MCBSDS =</span> <span class="fu">rowMeans</span>(.[, <span class="fu">c</span>(<span class="st">&quot;CBSD3S&quot;</span>, <span class="st">&quot;CBSD6S&quot;</span>, <span class="st">&quot;CBSD9S&quot;</span>)], <span class="at">na.rm =</span> T)) <span class="sc">%&gt;%</span> <span class="fu">select</span>(<span class="sc">-</span>CMD3S, </span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>    <span class="sc">-</span>CMD6S, <span class="sc">-</span>CMD9S, <span class="sc">-</span>CBSD3S, <span class="sc">-</span>CBSD6S, <span class="sc">-</span>CBSD9S)</span></code></pre></div>
+</div>
+</div>
+<div id="user-input-assign-genos-to-phenos" class="section level1">
+<h1>[User input] Assign genos to phenos</h1>
+<p>This step is mostly copy-pasted from previous processing of IITA- and NRCRI-specific data.</p>
+<p>Uses 3 flat files, which are available e.g. <a href="ftp://ftp.cassavabase.org/marnin_datasets/NRCRI_2020GS/data/">here</a>. Specifically, <code>IITA_GBStoPhenoMaster_33018.csv</code>, <code>GBSdataMasterList_31818.csv</code> and <code>NRCRI_GBStoPhenoMaster_40318.csv</code>. I copy them to the <code>data/</code> sub-directory for the current analysis.</p>
+<p>In addition, DArT-only samples are now expected to also have phenotypes. Therefore, checking for matches in new flatfiles, deposited in the <code>data/</code> (see code below).</p>
+<div class="sourceCode" id="cb17"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse); <span class="fu">library</span>(magrittr)</span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>gbs2phenoMaster<span class="ot">&lt;-</span>dbdata <span class="sc">%&gt;%</span> </span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(germplasmName) <span class="sc">%&gt;%</span> </span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>  distinct <span class="sc">%&gt;%</span> </span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">left_join</span>(<span class="fu">read.csv</span>(here<span class="sc">::</span><span class="fu">here</span>(<span class="st">&quot;data&quot;</span>,<span class="st">&quot;NRCRI_GBStoPhenoMaster_40318.csv&quot;</span>), </span>
+<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a>                     <span class="at">stringsAsFactors =</span> F)) <span class="sc">%&gt;%</span> </span>
+<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">FullSampleName=</span><span class="fu">ifelse</span>(<span class="fu">grepl</span>(<span class="st">&quot;C2a&quot;</span>,germplasmName,<span class="at">ignore.case =</span> T) <span class="sc">&amp;</span> </span>
+<span id="cb17-8"><a href="#cb17-8" aria-hidden="true" tabindex="-1"></a>                                 <span class="fu">is.na</span>(FullSampleName),germplasmName,FullSampleName)) <span class="sc">%&gt;%</span> </span>
+<span id="cb17-9"><a href="#cb17-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">is.na</span>(FullSampleName)) <span class="sc">%&gt;%</span> </span>
+<span id="cb17-10"><a href="#cb17-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(germplasmName,FullSampleName) <span class="sc">%&gt;%</span> </span>
+<span id="cb17-11"><a href="#cb17-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">bind_rows</span>(dbdata <span class="sc">%&gt;%</span> </span>
+<span id="cb17-12"><a href="#cb17-12" aria-hidden="true" tabindex="-1"></a>              <span class="fu">select</span>(germplasmName) <span class="sc">%&gt;%</span> </span>
+<span id="cb17-13"><a href="#cb17-13" aria-hidden="true" tabindex="-1"></a>              distinct <span class="sc">%&gt;%</span> </span>
+<span id="cb17-14"><a href="#cb17-14" aria-hidden="true" tabindex="-1"></a>              <span class="fu">left_join</span>(<span class="fu">read.csv</span>(here<span class="sc">::</span><span class="fu">here</span>(<span class="st">&quot;data&quot;</span>,<span class="st">&quot;IITA_GBStoPhenoMaster_33018.csv&quot;</span>), </span>
+<span id="cb17-15"><a href="#cb17-15" aria-hidden="true" tabindex="-1"></a>                                 <span class="at">stringsAsFactors =</span> F)) <span class="sc">%&gt;%</span> </span>
+<span id="cb17-16"><a href="#cb17-16" aria-hidden="true" tabindex="-1"></a>              <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">is.na</span>(FullSampleName)) <span class="sc">%&gt;%</span> </span>
+<span id="cb17-17"><a href="#cb17-17" aria-hidden="true" tabindex="-1"></a>              <span class="fu">select</span>(germplasmName,FullSampleName)) <span class="sc">%&gt;%</span> </span>
+<span id="cb17-18"><a href="#cb17-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">bind_rows</span>(dbdata <span class="sc">%&gt;%</span> </span>
+<span id="cb17-19"><a href="#cb17-19" aria-hidden="true" tabindex="-1"></a>              <span class="fu">select</span>(germplasmName) <span class="sc">%&gt;%</span> </span>
+<span id="cb17-20"><a href="#cb17-20" aria-hidden="true" tabindex="-1"></a>              distinct <span class="sc">%&gt;%</span> </span>
+<span id="cb17-21"><a href="#cb17-21" aria-hidden="true" tabindex="-1"></a>              <span class="fu">left_join</span>(<span class="fu">read.csv</span>(here<span class="sc">::</span><span class="fu">here</span>(<span class="st">&quot;data&quot;</span>,<span class="st">&quot;GBSdataMasterList_31818.csv&quot;</span>), </span>
+<span id="cb17-22"><a href="#cb17-22" aria-hidden="true" tabindex="-1"></a>                                 <span class="at">stringsAsFactors =</span> F) <span class="sc">%&gt;%</span> </span>
+<span id="cb17-23"><a href="#cb17-23" aria-hidden="true" tabindex="-1"></a>                          <span class="fu">select</span>(DNASample,FullSampleName) <span class="sc">%&gt;%</span> </span>
+<span id="cb17-24"><a href="#cb17-24" aria-hidden="true" tabindex="-1"></a>                          <span class="fu">rename</span>(<span class="at">germplasmName=</span>DNASample)) <span class="sc">%&gt;%</span> </span>
+<span id="cb17-25"><a href="#cb17-25" aria-hidden="true" tabindex="-1"></a>              <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">is.na</span>(FullSampleName)) <span class="sc">%&gt;%</span> </span>
+<span id="cb17-26"><a href="#cb17-26" aria-hidden="true" tabindex="-1"></a>              <span class="fu">select</span>(germplasmName,FullSampleName)) <span class="sc">%&gt;%</span> </span>
+<span id="cb17-27"><a href="#cb17-27" aria-hidden="true" tabindex="-1"></a>  <span class="fu">bind_rows</span>(dbdata <span class="sc">%&gt;%</span> </span>
+<span id="cb17-28"><a href="#cb17-28" aria-hidden="true" tabindex="-1"></a>              <span class="fu">select</span>(germplasmName) <span class="sc">%&gt;%</span> </span>
+<span id="cb17-29"><a href="#cb17-29" aria-hidden="true" tabindex="-1"></a>              distinct <span class="sc">%&gt;%</span> </span>
+<span id="cb17-30"><a href="#cb17-30" aria-hidden="true" tabindex="-1"></a>              <span class="fu">mutate</span>(<span class="at">germplasmSynonyms=</span><span class="fu">ifelse</span>(<span class="fu">grepl</span>(<span class="st">&quot;^UG&quot;</span>,germplasmName,<span class="at">ignore.case =</span> T),</span>
+<span id="cb17-31"><a href="#cb17-31" aria-hidden="true" tabindex="-1"></a>                                              <span class="fu">gsub</span>(<span class="st">&quot;UG&quot;</span>,<span class="st">&quot;Ug&quot;</span>,germplasmName),germplasmName)) <span class="sc">%&gt;%</span> </span>
+<span id="cb17-32"><a href="#cb17-32" aria-hidden="true" tabindex="-1"></a>              <span class="fu">left_join</span>(<span class="fu">read.csv</span>(here<span class="sc">::</span><span class="fu">here</span>(<span class="st">&quot;data&quot;</span>,<span class="st">&quot;GBSdataMasterList_31818.csv&quot;</span>), </span>
+<span id="cb17-33"><a href="#cb17-33" aria-hidden="true" tabindex="-1"></a>                                 <span class="at">stringsAsFactors =</span> F) <span class="sc">%&gt;%</span> </span>
+<span id="cb17-34"><a href="#cb17-34" aria-hidden="true" tabindex="-1"></a>                          <span class="fu">select</span>(DNASample,FullSampleName) <span class="sc">%&gt;%</span> </span>
+<span id="cb17-35"><a href="#cb17-35" aria-hidden="true" tabindex="-1"></a>                          <span class="fu">rename</span>(<span class="at">germplasmSynonyms=</span>DNASample)) <span class="sc">%&gt;%</span> </span>
+<span id="cb17-36"><a href="#cb17-36" aria-hidden="true" tabindex="-1"></a>              <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">is.na</span>(FullSampleName)) <span class="sc">%&gt;%</span> </span>
+<span id="cb17-37"><a href="#cb17-37" aria-hidden="true" tabindex="-1"></a>              <span class="fu">select</span>(germplasmName,FullSampleName)) <span class="sc">%&gt;%</span>  </span>
+<span id="cb17-38"><a href="#cb17-38" aria-hidden="true" tabindex="-1"></a>  <span class="fu">bind_rows</span>(dbdata <span class="sc">%&gt;%</span> </span>
+<span id="cb17-39"><a href="#cb17-39" aria-hidden="true" tabindex="-1"></a>              <span class="fu">select</span>(germplasmName) <span class="sc">%&gt;%</span> </span>
+<span id="cb17-40"><a href="#cb17-40" aria-hidden="true" tabindex="-1"></a>              distinct <span class="sc">%&gt;%</span> </span>
+<span id="cb17-41"><a href="#cb17-41" aria-hidden="true" tabindex="-1"></a>              <span class="fu">mutate</span>(<span class="at">germplasmSynonyms=</span><span class="fu">ifelse</span>(<span class="fu">grepl</span>(<span class="st">&quot;^TZ&quot;</span>,germplasmName,</span>
+<span id="cb17-42"><a href="#cb17-42" aria-hidden="true" tabindex="-1"></a>                                                    <span class="at">ignore.case =</span> T),</span>
+<span id="cb17-43"><a href="#cb17-43" aria-hidden="true" tabindex="-1"></a>                                              <span class="fu">gsub</span>(<span class="st">&quot;TZ&quot;</span>,<span class="st">&quot;&quot;</span>,germplasmName),germplasmName)) <span class="sc">%&gt;%</span> </span>
+<span id="cb17-44"><a href="#cb17-44" aria-hidden="true" tabindex="-1"></a>              <span class="fu">left_join</span>(<span class="fu">read.csv</span>(here<span class="sc">::</span><span class="fu">here</span>(<span class="st">&quot;data&quot;</span>,<span class="st">&quot;GBSdataMasterList_31818.csv&quot;</span>), </span>
+<span id="cb17-45"><a href="#cb17-45" aria-hidden="true" tabindex="-1"></a>                                 <span class="at">stringsAsFactors =</span> F) <span class="sc">%&gt;%</span> </span>
+<span id="cb17-46"><a href="#cb17-46" aria-hidden="true" tabindex="-1"></a>                          <span class="fu">select</span>(DNASample,FullSampleName) <span class="sc">%&gt;%</span> </span>
+<span id="cb17-47"><a href="#cb17-47" aria-hidden="true" tabindex="-1"></a>                          <span class="fu">rename</span>(<span class="at">germplasmSynonyms=</span>DNASample)) <span class="sc">%&gt;%</span> </span>
+<span id="cb17-48"><a href="#cb17-48" aria-hidden="true" tabindex="-1"></a>              <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">is.na</span>(FullSampleName)) <span class="sc">%&gt;%</span></span>
+<span id="cb17-49"><a href="#cb17-49" aria-hidden="true" tabindex="-1"></a>              <span class="fu">select</span>(germplasmName,FullSampleName)) <span class="sc">%&gt;%</span> </span>
+<span id="cb17-50"><a href="#cb17-50" aria-hidden="true" tabindex="-1"></a>  distinct <span class="sc">%&gt;%</span> </span>
+<span id="cb17-51"><a href="#cb17-51" aria-hidden="true" tabindex="-1"></a>  <span class="fu">left_join</span>(<span class="fu">read.csv</span>(here<span class="sc">::</span><span class="fu">here</span>(<span class="st">&quot;data&quot;</span>,<span class="st">&quot;GBSdataMasterList_31818.csv&quot;</span>), </span>
+<span id="cb17-52"><a href="#cb17-52" aria-hidden="true" tabindex="-1"></a>                     <span class="at">stringsAsFactors =</span> F) <span class="sc">%&gt;%</span> </span>
+<span id="cb17-53"><a href="#cb17-53" aria-hidden="true" tabindex="-1"></a>              <span class="fu">select</span>(FullSampleName,OrigKeyFile,Institute) <span class="sc">%&gt;%</span> </span>
+<span id="cb17-54"><a href="#cb17-54" aria-hidden="true" tabindex="-1"></a>              <span class="fu">rename</span>(<span class="at">OriginOfSample=</span>Institute)) <span class="sc">%&gt;%</span> </span>
+<span id="cb17-55"><a href="#cb17-55" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">OrigKeyFile=</span><span class="fu">ifelse</span>(<span class="fu">grepl</span>(<span class="st">&quot;C2a&quot;</span>,germplasmName,<span class="at">ignore.case =</span> T),</span>
+<span id="cb17-56"><a href="#cb17-56" aria-hidden="true" tabindex="-1"></a>                            <span class="fu">ifelse</span>(<span class="fu">is.na</span>(OrigKeyFile),<span class="st">&quot;LavalGBS&quot;</span>,OrigKeyFile),</span>
+<span id="cb17-57"><a href="#cb17-57" aria-hidden="true" tabindex="-1"></a>                            OrigKeyFile),</span>
+<span id="cb17-58"><a href="#cb17-58" aria-hidden="true" tabindex="-1"></a>         <span class="at">OriginOfSample=</span><span class="fu">ifelse</span>(<span class="fu">grepl</span>(<span class="st">&quot;C2a&quot;</span>,germplasmName,<span class="at">ignore.case =</span> T),</span>
+<span id="cb17-59"><a href="#cb17-59" aria-hidden="true" tabindex="-1"></a>                               <span class="fu">ifelse</span>(<span class="fu">is.na</span>(OriginOfSample),<span class="st">&quot;NRCRI&quot;</span>,OriginOfSample),</span>
+<span id="cb17-60"><a href="#cb17-60" aria-hidden="true" tabindex="-1"></a>                               OriginOfSample))</span>
+<span id="cb17-61"><a href="#cb17-61" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-62"><a href="#cb17-62" aria-hidden="true" tabindex="-1"></a><span class="do">## NEW: check for germName-DArT name matches</span></span>
+<span id="cb17-63"><a href="#cb17-63" aria-hidden="true" tabindex="-1"></a>germNamesWithoutGBSgenos<span class="ot">&lt;-</span>dbdata <span class="sc">%&gt;%</span> </span>
+<span id="cb17-64"><a href="#cb17-64" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(programName,germplasmName) <span class="sc">%&gt;%</span> </span>
+<span id="cb17-65"><a href="#cb17-65" aria-hidden="true" tabindex="-1"></a>  distinct <span class="sc">%&gt;%</span> </span>
+<span id="cb17-66"><a href="#cb17-66" aria-hidden="true" tabindex="-1"></a>  <span class="fu">left_join</span>(gbs2phenoMaster) <span class="sc">%&gt;%</span> </span>
+<span id="cb17-67"><a href="#cb17-67" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="fu">is.na</span>(FullSampleName)) <span class="sc">%&gt;%</span> </span>
+<span id="cb17-68"><a href="#cb17-68" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="sc">-</span>FullSampleName)</span>
+<span id="cb17-69"><a href="#cb17-69" aria-hidden="true" tabindex="-1"></a><span class="do">## NEW: check for germName-DArT name matches</span></span>
+<span id="cb17-70"><a href="#cb17-70" aria-hidden="true" tabindex="-1"></a>germNamesWithoutGBSgenos<span class="ot">&lt;-</span>dbdata <span class="sc">%&gt;%</span> </span>
+<span id="cb17-71"><a href="#cb17-71" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(programName,germplasmName) <span class="sc">%&gt;%</span> </span>
+<span id="cb17-72"><a href="#cb17-72" aria-hidden="true" tabindex="-1"></a>  distinct <span class="sc">%&gt;%</span> </span>
+<span id="cb17-73"><a href="#cb17-73" aria-hidden="true" tabindex="-1"></a>  <span class="fu">left_join</span>(gbs2phenoMaster) <span class="sc">%&gt;%</span> </span>
+<span id="cb17-74"><a href="#cb17-74" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="fu">is.na</span>(FullSampleName)) <span class="sc">%&gt;%</span> </span>
+<span id="cb17-75"><a href="#cb17-75" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="sc">-</span>FullSampleName)</span>
+<span id="cb17-76"><a href="#cb17-76" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-77"><a href="#cb17-77" aria-hidden="true" tabindex="-1"></a>germNamesWithDArT<span class="ot">&lt;-</span>germNamesWithoutGBSgenos <span class="sc">%&gt;%</span> </span>
+<span id="cb17-78"><a href="#cb17-78" aria-hidden="true" tabindex="-1"></a>  <span class="fu">inner_join</span>(<span class="fu">read.table</span>(here<span class="sc">::</span><span class="fu">here</span>(<span class="st">&quot;data&quot;</span>,<span class="st">&quot;chr1_RefPanelAndGSprogeny_ReadyForGP_72719.fam&quot;</span>), </span>
+<span id="cb17-79"><a href="#cb17-79" aria-hidden="true" tabindex="-1"></a>                        <span class="at">header =</span> F, <span class="at">stringsAsFactors =</span> F)<span class="sc">$</span>V2 <span class="sc">%&gt;%</span> </span>
+<span id="cb17-80"><a href="#cb17-80" aria-hidden="true" tabindex="-1"></a>               <span class="fu">grep</span>(<span class="st">&quot;TMS16|TMS17|TMS18|TMS19|TMS20&quot;</span>,.,<span class="at">value =</span> T, <span class="at">ignore.case =</span> T) <span class="sc">%&gt;%</span> </span>
+<span id="cb17-81"><a href="#cb17-81" aria-hidden="true" tabindex="-1"></a>               <span class="fu">tibble</span>(<span class="at">dartName=</span>.) <span class="sc">%&gt;%</span> </span>
+<span id="cb17-82"><a href="#cb17-82" aria-hidden="true" tabindex="-1"></a>               <span class="fu">separate</span>(dartName,<span class="fu">c</span>(<span class="st">&quot;germplasmName&quot;</span>,<span class="st">&quot;dartID&quot;</span>),<span class="st">&quot;_&quot;</span>,<span class="at">extra =</span> <span class="st">&#39;merge&#39;</span>,<span class="at">remove =</span> F)) <span class="sc">%&gt;%</span> </span>
+<span id="cb17-83"><a href="#cb17-83" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(germplasmName) <span class="sc">%&gt;%</span> </span>
+<span id="cb17-84"><a href="#cb17-84" aria-hidden="true" tabindex="-1"></a>  <span class="fu">slice</span>(<span class="dv">1</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb17-85"><a href="#cb17-85" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ungroup</span>() <span class="sc">%&gt;%</span> </span>
+<span id="cb17-86"><a href="#cb17-86" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rename</span>(<span class="at">FullSampleName=</span>dartName) <span class="sc">%&gt;%</span> </span>
+<span id="cb17-87"><a href="#cb17-87" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">OrigKeyFile=</span><span class="st">&quot;DArTseqLD&quot;</span>, <span class="at">OriginOfSample=</span><span class="st">&quot;IITA&quot;</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb17-88"><a href="#cb17-88" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="sc">-</span>dartID)</span>
+<span id="cb17-89"><a href="#cb17-89" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(<span class="fu">paste0</span>(<span class="fu">nrow</span>(germNamesWithDArT),<span class="st">&quot; germNames with DArT-only genos&quot;</span>))</span></code></pre></div>
+<pre><code>[1] &quot;0 germNames with DArT-only genos&quot;</code></pre>
+<div class="sourceCode" id="cb19"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="co"># first, filter to just program-DNAorigin matches</span></span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>germNamesWithGenos<span class="ot">&lt;-</span>dbdata <span class="sc">%&gt;%</span> </span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(programName,germplasmName) <span class="sc">%&gt;%</span> </span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a>  distinct <span class="sc">%&gt;%</span> </span>
+<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">left_join</span>(gbs2phenoMaster) <span class="sc">%&gt;%</span> </span>
+<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">is.na</span>(FullSampleName))</span>
+<span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(<span class="fu">paste0</span>(<span class="fu">nrow</span>(germNamesWithGenos),<span class="st">&quot; germNames with GBS genos&quot;</span>))</span></code></pre></div>
+<pre><code>[1] &quot;549 germNames with GBS genos&quot;</code></pre>
+<div class="sourceCode" id="cb21"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="co"># program-germNames with locally sourced GBS samples</span></span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>germNamesWithGenos_HasLocalSourcedGBS<span class="ot">&lt;-</span>germNamesWithGenos <span class="sc">%&gt;%</span> </span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(programName<span class="sc">==</span>OriginOfSample) <span class="sc">%&gt;%</span> </span>
+<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(programName,germplasmName) <span class="sc">%&gt;%</span> </span>
+<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">semi_join</span>(germNamesWithGenos,.) <span class="sc">%&gt;%</span> </span>
+<span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(programName,germplasmName) <span class="sc">%&gt;%</span> <span class="co"># select one DNA per germplasmName per program</span></span>
+<span id="cb21-7"><a href="#cb21-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">slice</span>(<span class="dv">1</span>) <span class="sc">%&gt;%</span> <span class="fu">ungroup</span>() </span>
+<span id="cb21-8"><a href="#cb21-8" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(<span class="fu">paste0</span>(<span class="fu">nrow</span>(germNamesWithGenos_HasLocalSourcedGBS),<span class="st">&quot; germNames with local GBS genos&quot;</span>))</span></code></pre></div>
+<pre><code>[1] &quot;421 germNames with local GBS genos&quot;</code></pre>
+<div class="sourceCode" id="cb23"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="co"># the rest (program-germNames) with GBS but coming from a different breeding program</span></span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>germNamesWithGenos_NoLocalSourcedGBS<span class="ot">&lt;-</span>germNamesWithGenos <span class="sc">%&gt;%</span> </span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(programName<span class="sc">==</span>OriginOfSample) <span class="sc">%&gt;%</span> </span>
+<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(programName,germplasmName) <span class="sc">%&gt;%</span> </span>
+<span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">anti_join</span>(germNamesWithGenos,.) <span class="sc">%&gt;%</span> </span>
+<span id="cb23-6"><a href="#cb23-6" aria-hidden="true" tabindex="-1"></a>  <span class="co"># select one DNA per germplasmName per program</span></span>
+<span id="cb23-7"><a href="#cb23-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(programName,germplasmName) <span class="sc">%&gt;%</span> </span>
+<span id="cb23-8"><a href="#cb23-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">slice</span>(<span class="dv">1</span>) <span class="sc">%&gt;%</span> <span class="fu">ungroup</span>() </span>
+<span id="cb23-9"><a href="#cb23-9" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(<span class="fu">paste0</span>(<span class="fu">nrow</span>(germNamesWithGenos_NoLocalSourcedGBS),<span class="st">&quot; germNames without local GBS genos&quot;</span>))</span></code></pre></div>
+<pre><code>[1] &quot;14 germNames without local GBS genos&quot;</code></pre>
+<div class="sourceCode" id="cb25"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>genosForPhenos<span class="ot">&lt;-</span><span class="fu">bind_rows</span>(germNamesWithGenos_HasLocalSourcedGBS,</span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a>                        germNamesWithGenos_NoLocalSourcedGBS) <span class="sc">%&gt;%</span> </span>
+<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">bind_rows</span>(germNamesWithDArT)</span>
+<span id="cb25-4"><a href="#cb25-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-5"><a href="#cb25-5" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(<span class="fu">paste0</span>(<span class="fu">nrow</span>(genosForPhenos),<span class="st">&quot; total germNames with genos either GBS or DArT&quot;</span>))</span></code></pre></div>
+<pre><code>[1] &quot;435 total germNames with genos either GBS or DArT&quot;</code></pre>
+<div class="sourceCode" id="cb27"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>dbdata <span class="sc">%&lt;&gt;%</span> </span>
+<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">left_join</span>(genosForPhenos) </span>
+<span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-4"><a href="#cb27-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Create a new identifier, GID</span></span>
+<span id="cb27-5"><a href="#cb27-5" aria-hidden="true" tabindex="-1"></a><span class="do">## Equals the value SNP data name (FullSampleName) </span></span>
+<span id="cb27-6"><a href="#cb27-6" aria-hidden="true" tabindex="-1"></a><span class="do">## else germplasmName if no SNP data</span></span>
+<span id="cb27-7"><a href="#cb27-7" aria-hidden="true" tabindex="-1"></a>dbdata <span class="sc">%&lt;&gt;%</span> </span>
+<span id="cb27-8"><a href="#cb27-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">GID=</span><span class="fu">ifelse</span>(<span class="fu">is.na</span>(FullSampleName),germplasmName,FullSampleName))</span></code></pre></div>
+<div id="write-lists-for-matching-genos-to-phenos" class="section level3">
+<h3>Write lists for matching genos-to-phenos</h3>
+<div class="sourceCode" id="cb28"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a>snps_refpanel <span class="ot">&lt;-</span> <span class="fu">readRDS</span>(here<span class="sc">::</span><span class="fu">here</span>(<span class="st">&quot;output&quot;</span>, <span class="st">&quot;DosageMatrix_ImputationReferencePanel_StageVI_91119.rds&quot;</span>))</span>
+<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a>snps5629 <span class="ot">&lt;-</span> <span class="fu">readRDS</span>(here<span class="sc">::</span><span class="fu">here</span>(<span class="st">&quot;output&quot;</span>, <span class="st">&quot;DosageMatrix_DCas20_5629_EA_REFimputedAndFiltered.rds&quot;</span>))</span>
+<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-4"><a href="#cb28-4" aria-hidden="true" tabindex="-1"></a>dbdata <span class="sc">%&gt;%</span> <span class="fu">distinct</span>(germplasmName, FullSampleName) <span class="sc">%&gt;%</span> <span class="fu">write.csv</span>(., <span class="at">file =</span> here<span class="sc">::</span><span class="fu">here</span>(<span class="st">&quot;output&quot;</span>, </span>
+<span id="cb28-5"><a href="#cb28-5" aria-hidden="true" tabindex="-1"></a>    <span class="st">&quot;germplasmName_to_DNAname_matches_TARI_2020Dec22.csv&quot;</span>), <span class="at">row.names =</span> F)</span>
+<span id="cb28-6"><a href="#cb28-6" aria-hidden="true" tabindex="-1"></a><span class="fu">rownames</span>(snps_refpanel) <span class="sc">%&gt;%</span> <span class="fu">write.csv</span>(., <span class="at">file =</span> here<span class="sc">::</span><span class="fu">here</span>(<span class="st">&quot;output&quot;</span>, <span class="st">&quot;rownames_DosageMatrix_ImputationReferencePanel_StageVI_91119.csv&quot;</span>), </span>
+<span id="cb28-7"><a href="#cb28-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">row.names =</span> F)</span>
+<span id="cb28-8"><a href="#cb28-8" aria-hidden="true" tabindex="-1"></a><span class="fu">rownames</span>(snps5629) <span class="sc">%&gt;%</span> <span class="fu">write.csv</span>(., <span class="at">file =</span> here<span class="sc">::</span><span class="fu">here</span>(<span class="st">&quot;output&quot;</span>, <span class="st">&quot;rownames_DosageMatrix_DCas20_5629_EA_REFimputedAndFiltered.csv&quot;</span>), </span>
+<span id="cb28-9"><a href="#cb28-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">row.names =</span> F)</span>
+<span id="cb28-10"><a href="#cb28-10" aria-hidden="true" tabindex="-1"></a><span class="fu">rm</span>(snps_refpanel, snps5629)</span>
+<span id="cb28-11"><a href="#cb28-11" aria-hidden="true" tabindex="-1"></a><span class="fu">gc</span>()</span></code></pre></div>
+<div class="sourceCode" id="cb29"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="co"># dbdata %&gt;% count(germplasmName,FullSampleName) %&gt;%</span></span>
+<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a><span class="co"># filter(is.na(FullSampleName)) %$% unique(germplasmName)</span></span></code></pre></div>
+<div class="sourceCode" id="cb30"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="co"># going to check against SNP data</span></span>
+<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a><span class="co"># DosageMatrix_ImputationReferencePanel_StageVI_91119.rds</span></span>
+<span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a><span class="co"># DosageMatrix_DCas20_5629_EA_REFimputedAndFiltered.rds</span></span>
+<span id="cb30-4"><a href="#cb30-4" aria-hidden="true" tabindex="-1"></a><span class="co"># snps&lt;-readRDS(file=url(paste0(&#39;ftp://ftp.cassavabase.org/marnin_datasets/NGC_BigData/&#39;,</span></span>
+<span id="cb30-5"><a href="#cb30-5" aria-hidden="true" tabindex="-1"></a><span class="co"># &#39;DosageMatrix_RefPanelAndGSprogeny_ReadyForGP_73019.rds&#39;)))</span></span>
+<span id="cb30-6"><a href="#cb30-6" aria-hidden="true" tabindex="-1"></a><span class="co"># rownames_snps&lt;-rownames(snps); rm(snps); gc() # current matches to SNP data</span></span>
+<span id="cb30-7"><a href="#cb30-7" aria-hidden="true" tabindex="-1"></a><span class="co"># dbdata %&gt;% distinct(GID,germplasmName,FullSampleName) %&gt;%</span></span>
+<span id="cb30-8"><a href="#cb30-8" aria-hidden="true" tabindex="-1"></a><span class="co"># semi_join(tibble(GID=rownames_snps)) %&gt;% nrow() #1340 dbdata %&gt;%</span></span>
+<span id="cb30-9"><a href="#cb30-9" aria-hidden="true" tabindex="-1"></a><span class="co"># distinct(GID,germplasmName,FullSampleName) %&gt;%</span></span>
+<span id="cb30-10"><a href="#cb30-10" aria-hidden="true" tabindex="-1"></a><span class="co"># semi_join(tibble(GID=rownames_snps)) %&gt;% filter(grepl(&#39;c1&#39;,GID,ignore.case =</span></span>
+<span id="cb30-11"><a href="#cb30-11" aria-hidden="true" tabindex="-1"></a><span class="co"># F)) # no C1 clones currently match dbdata %&gt;%</span></span>
+<span id="cb30-12"><a href="#cb30-12" aria-hidden="true" tabindex="-1"></a><span class="co"># distinct(GID,germplasmName,FullSampleName) %&gt;%</span></span>
+<span id="cb30-13"><a href="#cb30-13" aria-hidden="true" tabindex="-1"></a><span class="co"># semi_join(tibble(GID=rownames_snps)) %&gt;% filter(grepl(&#39;c2&#39;,GID,ignore.case =</span></span>
+<span id="cb30-14"><a href="#cb30-14" aria-hidden="true" tabindex="-1"></a><span class="co"># F)) # no C2 clones either dbdata %&gt;% distinct(GID,germplasmName,FullSampleName)</span></span>
+<span id="cb30-15"><a href="#cb30-15" aria-hidden="true" tabindex="-1"></a><span class="co"># %&gt;% anti_join(tibble(GID=rownames_snps)) %&gt;%</span></span>
+<span id="cb30-16"><a href="#cb30-16" aria-hidden="true" tabindex="-1"></a><span class="co"># filter(grepl(&#39;c1|c2&#39;,GID,ignore.case = T)) # definitely there are both C1 and</span></span>
+<span id="cb30-17"><a href="#cb30-17" aria-hidden="true" tabindex="-1"></a><span class="co"># C2 phenotypes # and there are C1 and C2 genotypes rownames_snps %&gt;%</span></span>
+<span id="cb30-18"><a href="#cb30-18" aria-hidden="true" tabindex="-1"></a><span class="co"># grep(&#39;c1&#39;,.,value = T,ignore.case = T) %&gt;% length # [1] 1762 rownames_snps %&gt;%</span></span>
+<span id="cb30-19"><a href="#cb30-19" aria-hidden="true" tabindex="-1"></a><span class="co"># grep(&#39;c2&#39;,.,value = T,ignore.case = T) %&gt;% length # [1] 4291</span></span></code></pre></div>
+</div>
+<div id="output-cleaned-file" class="section level2">
+<h2>Output “cleaned” file</h2>
+<div class="sourceCode" id="cb31"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="fu">saveRDS</span>(dbdata, <span class="at">file =</span> here<span class="sc">::</span><span class="fu">here</span>(<span class="st">&quot;output&quot;</span>, <span class="st">&quot;TARI_CleanedTrialData_2020Dec18.rds&quot;</span>))</span></code></pre></div>
+</div>
+</div>
+<div id="detect-experimental-designs" class="section level1">
+<h1>Detect experimental designs</h1>
+<p>The next step is to check the experimental design of each trial. If you are absolutely certain of the usage of the design variables in your dataset, you might not need this step.</p>
+<p>Examples of reasons to do the step below:</p>
+<ul>
+<li>Some trials appear to be complete blocked designs and the blockNumber is used instead of replicate, which is what most use.</li>
+<li>Some complete block designs have nested, incomplete sub-blocks, others simply copy the “replicate” variable into the “blockNumber variable”</li>
+<li>Some trials have only incomplete blocks <em>but</em> the incomplete block info might be in the replicate <em>and/or</em> the blockNumber column</li>
+</ul>
+<p>One reason it might be important to get this right is that the variance among complete blocks might not be the same among incomplete blocks. If we treat a mixture of complete and incomplete blocks as part of the same random-effect (replicated-within-trial), we assume they have the same variance.</p>
+<p>Also error variances might be heterogeneous among different trial-types (blocking scheme available) <em>and/or</em> plot sizes (maxNOHAV).</p>
+<p>Start with cleaned data from previous step.</p>
+<div class="sourceCode" id="cb32"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a><span class="fu">rm</span>(<span class="at">list =</span> <span class="fu">ls</span>())</span>
+<span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a><span class="fu">gc</span>()</span></code></pre></div>
+<pre><code>          used (Mb) gc trigger  (Mb) limit (Mb) max used  (Mb)
+Ncells 1165914 62.3    2914854 155.7         NA  2914854 155.7
+Vcells 2289334 17.5   26506618 202.3     102400 41413491 316.0</code></pre>
+<div class="sourceCode" id="cb34"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(magrittr)</span>
+<span id="cb34-3"><a href="#cb34-3" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(here<span class="sc">::</span><span class="fu">here</span>(<span class="st">&quot;code&quot;</span>, <span class="st">&quot;gsFunctions.R&quot;</span>))</span>
+<span id="cb34-4"><a href="#cb34-4" aria-hidden="true" tabindex="-1"></a>dbdata <span class="ot">&lt;-</span> <span class="fu">readRDS</span>(here<span class="sc">::</span><span class="fu">here</span>(<span class="st">&quot;output&quot;</span>, <span class="st">&quot;TARI_CleanedTrialData_2020Dec18.rds&quot;</span>))</span></code></pre></div>
+<div class="sourceCode" id="cb35"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a>dbdata <span class="sc">%&gt;%</span> head <span class="sc">%&gt;%</span> rmarkdown<span class="sc">::</span><span class="fu">paged_table</span>()</span></code></pre></div>
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":["studyYear"],"name":[1],"type":["int"],"align":["right"]},{"label":["programName"],"name":[2],"type":["chr"],"align":["left"]},{"label":["locationName"],"name":[3],"type":["chr"],"align":["left"]},{"label":["studyName"],"name":[4],"type":["chr"],"align":["left"]},{"label":["studyDesign"],"name":[5],"type":["chr"],"align":["left"]},{"label":["plotWidth"],"name":[6],"type":["dbl"],"align":["right"]},{"label":["plotLength"],"name":[7],"type":["int"],"align":["right"]},{"label":["fieldSize"],"name":[8],"type":["dbl"],"align":["right"]},{"label":["plantingDate"],"name":[9],"type":["lgl"],"align":["right"]},{"label":["harvestDate"],"name":[10],"type":["lgl"],"align":["right"]},{"label":["germplasmName"],"name":[11],"type":["chr"],"align":["left"]},{"label":["observationUnitDbId"],"name":[12],"type":["int"],"align":["right"]},{"label":["replicate"],"name":[13],"type":["int"],"align":["right"]},{"label":["blockNumber"],"name":[14],"type":["int"],"align":["right"]},{"label":["plotNumber"],"name":[15],"type":["int"],"align":["right"]},{"label":["rowNumber"],"name":[16],"type":["int"],"align":["right"]},{"label":["colNumber"],"name":[17],"type":["int"],"align":["right"]},{"label":["entryType"],"name":[18],"type":["chr"],"align":["left"]},{"label":["trialType"],"name":[19],"type":["chr"],"align":["left"]},{"label":["plantsPerPlot"],"name":[20],"type":["int"],"align":["right"]},{"label":["numberBlocks"],"name":[21],"type":["int"],"align":["right"]},{"label":["numberReps"],"name":[22],"type":["int"],"align":["right"]},{"label":["TrialType"],"name":[23],"type":["chr"],"align":["left"]},{"label":["CBSDRS"],"name":[24],"type":["dbl"],"align":["right"]},{"label":["CGMS1"],"name":[25],"type":["dbl"],"align":["right"]},{"label":["CGMS2"],"name":[26],"type":["dbl"],"align":["right"]},{"label":["DM"],"name":[27],"type":["dbl"],"align":["right"]},{"label":["PLTHT"],"name":[28],"type":["dbl"],"align":["right"]},{"label":["NOHAV"],"name":[29],"type":["dbl"],"align":["right"]},{"label":["HI"],"name":[30],"type":["dbl"],"align":["right"]},{"label":["PlotSpacing"],"name":[31],"type":["dbl"],"align":["right"]},{"label":["MaxNOHAV"],"name":[32],"type":["dbl"],"align":["right"]},{"label":["logFYLD"],"name":[33],"type":["dbl"],"align":["right"]},{"label":["logDYLD"],"name":[34],"type":["dbl"],"align":["right"]},{"label":["logTOPYLD"],"name":[35],"type":["dbl"],"align":["right"]},{"label":["logRTNO"],"name":[36],"type":["dbl"],"align":["right"]},{"label":["PropNOHAV"],"name":[37],"type":["dbl"],"align":["right"]},{"label":["MCMDS"],"name":[38],"type":["dbl"],"align":["right"]},{"label":["MCBSDS"],"name":[39],"type":["dbl"],"align":["right"]},{"label":["FullSampleName"],"name":[40],"type":["chr"],"align":["left"]},{"label":["OrigKeyFile"],"name":[41],"type":["chr"],"align":["left"]},{"label":["OriginOfSample"],"name":[42],"type":["chr"],"align":["left"]},{"label":["GID"],"name":[43],"type":["chr"],"align":["left"]}],"data":[{"1":"2016","2":"TARI","3":"Ukiriguru","4":"16 GxE","5":"Alpha","6":"NA","7":"NA","8":"NA","9":"NA","10":"NA","11":"ALBERT","12":"1032193","13":"1","14":"1","15":"1005","16":"NA","17":"NA","18":"test","19":"Regional Trials","20":"NA","21":"5","22":"3","23":"RegionalTrial","24":"1.03","25":"3","26":"3","27":"28.22","28":"NA","29":"NA","30":"NA","31":"1","32":"NA","33":"NA","34":"NA","35":"NA","36":"NA","37":"NA","38":"1","39":"1","40":"ALBERT:CA8RLANXX:7:526312","41":"tanzania_June2017_key.txt","42":"TARI","43":"ALBERT:CA8RLANXX:7:526312"},{"1":"2016","2":"TARI","3":"Ukiriguru","4":"16 GxE","5":"Alpha","6":"NA","7":"NA","8":"NA","9":"NA","10":"NA","11":"ALBERT","12":"1032129","13":"2","14":"4","15":"2019","16":"NA","17":"NA","18":"test","19":"Regional Trials","20":"NA","21":"5","22":"3","23":"RegionalTrial","24":"NA","25":"2","26":"3","27":"NA","28":"NA","29":"NA","30":"NA","31":"1","32":"NA","33":"NA","34":"NA","35":"NA","36":"NA","37":"NA","38":"1","39":"1","40":"ALBERT:CA8RLANXX:7:526312","41":"tanzania_June2017_key.txt","42":"TARI","43":"ALBERT:CA8RLANXX:7:526312"},{"1":"2016","2":"TARI","3":"Ukiriguru","4":"16 GxE","5":"Alpha","6":"NA","7":"NA","8":"NA","9":"NA","10":"NA","11":"ALBERT","12":"1032157","13":"3","14":"3","15":"3012","16":"NA","17":"NA","18":"test","19":"Regional Trials","20":"NA","21":"5","22":"3","23":"RegionalTrial","24":"NA","25":"2","26":"3","27":"NA","28":"NA","29":"NA","30":"NA","31":"1","32":"NA","33":"NA","34":"NA","35":"NA","36":"NA","37":"NA","38":"1","39":"1","40":"ALBERT:CA8RLANXX:7:526312","41":"tanzania_June2017_key.txt","42":"TARI","43":"ALBERT:CA8RLANXX:7:526312"},{"1":"2016","2":"TARI","3":"Ukiriguru","4":"16 GxE","5":"Alpha","6":"NA","7":"NA","8":"NA","9":"NA","10":"NA","11":"CH05_203","12":"1032149","13":"1","14":"3","15":"1015","16":"NA","17":"NA","18":"test","19":"Regional Trials","20":"NA","21":"5","22":"3","23":"RegionalTrial","24":"1.11","25":"2","26":"2","27":"25.62","28":"NA","29":"NA","30":"NA","31":"1","32":"NA","33":"NA","34":"NA","35":"NA","36":"NA","37":"NA","38":"1","39":"1","40":"CH05_203:250442976","41":"cassavaGBSkey_20160607","42":"NaCRRI","43":"CH05_203:250442976"},{"1":"2016","2":"TARI","3":"Ukiriguru","4":"16 GxE","5":"Alpha","6":"NA","7":"NA","8":"NA","9":"NA","10":"NA","11":"CH05_203","12":"1032177","13":"2","14":"4","15":"2017","16":"NA","17":"NA","18":"test","19":"Regional Trials","20":"NA","21":"5","22":"3","23":"RegionalTrial","24":"2.23","25":"2","26":"2","27":"32.19","28":"NA","29":"NA","30":"NA","31":"1","32":"NA","33":"NA","34":"NA","35":"NA","36":"NA","37":"NA","38":"1","39":"1","40":"CH05_203:250442976","41":"cassavaGBSkey_20160607","42":"NaCRRI","43":"CH05_203:250442976"},{"1":"2016","2":"TARI","3":"Ukiriguru","4":"16 GxE","5":"Alpha","6":"NA","7":"NA","8":"NA","9":"NA","10":"NA","11":"CH05_203","12":"1032159","13":"3","14":"4","15":"3017","16":"NA","17":"NA","18":"test","19":"Regional Trials","20":"NA","21":"5","22":"3","23":"RegionalTrial","24":"2.67","25":"2","26":"2","27":"29.26","28":"NA","29":"NA","30":"NA","31":"1","32":"NA","33":"NA","34":"NA","35":"NA","36":"NA","37":"NA","38":"1","39":"1","40":"CH05_203:250442976","41":"cassavaGBSkey_20160607","42":"NaCRRI","43":"CH05_203:250442976"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+<p>Detect designs</p>
+<div class="sourceCode" id="cb36"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a>dbdata <span class="ot">&lt;-</span> <span class="fu">detectExptDesigns</span>(dbdata)</span></code></pre></div>
+<div class="sourceCode" id="cb37"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a>dbdata <span class="sc">%&gt;%</span> <span class="fu">count</span>(programName, CompleteBlocks, IncompleteBlocks) <span class="sc">%&gt;%</span> rmarkdown<span class="sc">::</span><span class="fu">paged_table</span>()</span></code></pre></div>
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":["programName"],"name":[1],"type":["chr"],"align":["left"]},{"label":["CompleteBlocks"],"name":[2],"type":["lgl"],"align":["right"]},{"label":["IncompleteBlocks"],"name":[3],"type":["lgl"],"align":["right"]},{"label":["n"],"name":[4],"type":["int"],"align":["right"]}],"data":[{"1":"TARI","2":"FALSE","3":"FALSE","4":"644"},{"1":"TARI","2":"FALSE","3":"TRUE","4":"2680"},{"1":"TARI","2":"TRUE","3":"FALSE","4":"4166"},{"1":"TARI","2":"TRUE","3":"TRUE","4":"5228"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+<div id="output-file" class="section level2">
+<h2>Output file</h2>
+<div class="sourceCode" id="cb38"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a><span class="fu">saveRDS</span>(dbdata, <span class="at">file =</span> here<span class="sc">::</span><span class="fu">here</span>(<span class="st">&quot;output&quot;</span>, <span class="st">&quot;TARI_ExptDesignsDetected_2020Dec18.rds&quot;</span>))</span></code></pre></div>
+</div>
+</div>
+<div id="next-step" class="section level1">
+<h1>Next step</h1>
+<ol start="2" style="list-style-type: decimal">
+<li><a href="02-GetBLUPs.html">Get BLUPs combining all trial data</a>: Combine data from all trait-trials to get BLUPs for downstream genomic prediction.
+<ul>
+<li>Fit mixed-model to multi-trial dataset and extract BLUPs, de-regressed BLUPs and weights. Include two rounds of outlier removal.</li>
+</ul></li>
+</ol>
+<br>
+<p>
+<button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
+<span class="glyphicon glyphicon-wrench" aria-hidden="true"></span> Session information
+</button>
+</p>
+<div id="workflowr-sessioninfo" class="collapse">
+<div class="sourceCode" id="cb39"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sessionInfo</span>()</span></code></pre></div>
+<pre><code>R version 4.0.2 (2020-06-22)
+Platform: x86_64-apple-darwin17.0 (64-bit)
+Running under: macOS Catalina 10.15.7
+
+Matrix products: default
+BLAS:   /Library/Frameworks/R.framework/Versions/4.0/Resources/lib/libRblas.dylib
+LAPACK: /Library/Frameworks/R.framework/Versions/4.0/Resources/lib/libRlapack.dylib
+
+locale:
+[1] en_US.UTF-8/en_US.UTF-8/en_US.UTF-8/C/en_US.UTF-8/en_US.UTF-8
+
+attached base packages:
+[1] stats     graphics  grDevices utils     datasets  methods   base     
+
+other attached packages:
+ [1] magrittr_2.0.1  forcats_0.5.0   stringr_1.4.0   dplyr_1.0.2    
+ [5] purrr_0.3.4     readr_1.4.0     tidyr_1.1.2     tibble_3.0.4   
+ [9] ggplot2_3.3.2   tidyverse_1.3.0 workflowr_1.6.2
+
+loaded via a namespace (and not attached):
+ [1] tidyselect_1.1.0  xfun_0.19         haven_2.3.1       colorspace_2.0-0 
+ [5] vctrs_0.3.5       generics_0.1.0    htmltools_0.5.0   yaml_2.2.1       
+ [9] rlang_0.4.9       later_1.1.0.1     pillar_1.4.7      withr_2.3.0      
+[13] glue_1.4.2        DBI_1.1.0         dbplyr_2.0.0      modelr_0.1.8     
+[17] readxl_1.3.1      lifecycle_0.2.0   munsell_0.5.0     gtable_0.3.0     
+[21] cellranger_1.1.0  rvest_0.3.6       evaluate_0.14     knitr_1.30       
+[25] ps_1.5.0          httpuv_1.5.4      fansi_0.4.1       broom_0.7.2      
+[29] Rcpp_1.0.5        promises_1.1.1    backports_1.2.1   scales_1.1.1     
+[33] formatR_1.7       jsonlite_1.7.2    fs_1.5.0          hms_0.5.3        
+[37] digest_0.6.27     stringi_1.5.3     rprojroot_2.0.2   grid_4.0.2       
+[41] here_1.0.1        cli_2.2.0         tools_4.0.2       crayon_1.3.4     
+[45] whisker_0.4       pkgconfig_2.0.3   ellipsis_0.3.1    xml2_1.3.2       
+[49] reprex_0.3.0      lubridate_1.7.9.2 rstudioapi_0.13   assertthat_0.2.1 
+[53] rmarkdown_2.6     httr_1.4.2        R6_2.5.0          git2r_0.27.1     
+[57] compiler_4.0.2   </code></pre>
+</div>
+</div>
+
+
+<!-- Adjust MathJax settings so that all math formulae are shown using
+TeX fonts only; see
+http://docs.mathjax.org/en/latest/configuration.html.  This will make
+the presentation more consistent at the cost of the webpage sometimes
+taking slightly longer to load. Note that this only works because the
+footer is added to webpages before the MathJax javascript. -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    "HTML-CSS": { availableFonts: ["TeX"] }
+  });
+</script>
+
+
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open')
+  });
+});
+</script>
+
+<!-- code folding -->
+
+<script>
+$(document).ready(function ()  {
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_');
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
