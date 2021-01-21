@@ -135,8 +135,7 @@ mrks %>% count(Chr) %>% rmarkdown::paged_table()
 
 # Prediction accuracy
 
-3. [Check prediction accuracy](08-CrossValidation.html): Evaluate prediction accuracy with cross-validation.
-    * Compare prediction accuracy with vs. without IITA's training data to augment.
+3. [Check prediction accuracy](03-CrossValidation.html): Evaluate prediction accuracy with cross-validation.
 
 ```{r}
 rm(list=ls());gc()
@@ -177,10 +176,10 @@ cv %>%
 
 Two prediction models: A (additive-only) and ADE (additive + dominance + additive-by-dominance epistasis).
 
-```{r, fig.width=10, fig.height=5}
+```{r, fig.width=10, fig.height=8}
 cv %>% 
   ggplot(.,aes(x=Trait,y=accGETGV,fill=modelType)) + 
-  geom_boxplot(position = "dodge2",color='gray50',size=0.5) + 
+  geom_boxplot(position = "dodge2",color='gray50',size=0.5, notch = T) + 
   geom_hline(yintercept = 0, color='darkred') + 
   theme_bw() + 
   theme(strip.text.x = element_text(face='bold', size=12),
