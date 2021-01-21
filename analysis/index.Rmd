@@ -45,22 +45,28 @@ snps<-bind_rows(snps_refpanel[,snps2keep],
                 snps_dcas20_5629[,snps2keep])
 ```
 
-# December Genomic Prediction
+# Genomic Prediction (Dec. 20 - Jan. 21)
 
 Get TARI TP data from Cassavabase. Use it with imputed data to predict GEBV/GETGV for all samples in the new reports (**DCas20-5629**). 
 
 1. [Prepare training dataset](01-cleanTPdata.html): Download data from DB, "Clean" and format DB data.
+    * **[UPDATED Jan. 21, 2021]:** Matches of germplasmName-to-FullSampleName (GBS and DArTseqLD records) improved for TARI. 
+    * All subsequent analyses re-run.
 2. [Get BLUPs combining all trial data](02-GetBLUPs.html): Combine data from all trait-trials to get BLUPs for downstream genomic prediction. 
     * Fit mixed-model to multi-trial dataset and extract BLUPs, de-regressed BLUPs and weights. Include two rounds of outlier removal.
 3. [Check prediction accuracy](03-CrossValidation.html): Evaluate prediction accuracy with cross-validation.
 4. [Genomic prediction](04-GetGBLUPs.html): Predict _genomic_ BLUPs (GEBV and GETGV) for all selection candidates using all available data.
-5. [Results](05-Results.html): Home for plots and other results.
+5. [Results](05-Results.html): Plots, results and recommendations.
+    * 1) Accuracy estimates are most improved relative to previously. I didn't run the precise cross-validation folds so the judgement is based on visual comparison to the Dec. 2020 plot. 
+    * 2) DYLD and FYLD are _not_ well predicted and I would not recommend using them based on selection.
+    * 3) Expected Genetic Gain: GS C1 and other germplasm in DCAs20_5629 have better predicted GEBV on average than the TP!
 
-**Files**: everything is in the `output/` sub-directory. 
 
--  **GEBVs for parent selection:** `GEBV_TARI_ModelA_2020Dec21.csv`
--  **GETGVs for variety advancement:** `GETGV_TARI_ModelADE_2020Dec21.csv`
--  **Tidy, long-form CSV of predictions, including PEVs:** `genomicPredictions_TARI_2020Dec21.csv`
+**OUTPUT / FILES**: everything is in the `output/` sub-directory. 
+
+-  **GEBVs for parent selection:** `GEBV_TARI_ModelA_2021Jan21.csv`
+-  **GETGVs for variety advancement:** `GETGV_TARI_ModelADE_2021Jan21.csv`
+-  **Tidy, long-form CSV of predictions, including PEVs:** `genomicPredictions_TARI_2021Jan21.csv`
 
 [**DOWNLOAD FROM CASSAVABASE FTP SERVER**](ftp://ftp.cassavabase.org/marnin_datasets/TARI_2020GS/output/)
 

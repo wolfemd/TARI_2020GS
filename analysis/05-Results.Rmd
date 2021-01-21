@@ -10,7 +10,8 @@ editor_options:
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = F, tidy = T)
+knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = F, 
+                      tidy='styler', tidy.opts=list(strict=FALSE,width.cutoff=100), highlight=TRUE)
 ```
 
 # Raw data
@@ -18,14 +19,14 @@ knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = F, tidy = T)
 Summary of the number of unique plots, locations, years, etc. in the cleaned plot-basis data. See [here](01-cleanTPdata.html) for details..
 ```{r}
 library(tidyverse); library(magrittr);
-rawdata<-readRDS(file=here::here("output","TARI_ExptDesignsDetected_2020Dec18.rds"))
+rawdata<-readRDS(file=here::here("output","TARI_ExptDesignsDetected_2021Jan21.rds"))
 rawdata %>% 
   summarise(Nplots=nrow(.),
             across(c(locationName,studyYear,studyName,TrialType,GID), ~length(unique(.)),.names = "N_{.col}")) %>% 
   rmarkdown::paged_table()
 ```
 
-So ~3700 unique clone names in the phenotype data, across >12K plots. This _is not_ the same number of clones as are expected to be genotyped-and-phenotyped.
+So ~3700 unique clone names (plus ~5000 "C1" seedlings) in the phenotype data, across >18K plots. This _is not_ the same number of clones as are expected to be genotyped-and-phenotyped.
 
 Break down the plots based on the trial design and TrialType (really a grouping of the population that is breeding program specific), captured by two logical variables, **CompleteBlocks** and **IncompleteBlocks**.  
 ```{r}
@@ -63,18 +64,9 @@ rawdata %>%
   distinct(germplasmName,FullSampleName,GID) %>% 
   rmarkdown::paged_table()
 ```
-There are 423 so far. 
+There are 872! 
 
-```{r}
-rawdata %>% 
-  select(locationName,studyYear,studyName,TrialType,germplasmName,FullSampleName,GID,any_of(traits)) %>% 
-  # pivot_longer(cols = any_of(traits), values_to = "Value", names_to = "Trait") %>% 
-  # filter(!is.na(Value)) %>% 
-  distinct(germplasmName,FullSampleName,GID) %>% 
-  rmarkdown::paged_table()
-```
-
-Table of germplasmName-DNA-sample-name matches are here: `output/germplasmName_to_DNAname_matches_TARI_2020Dec22.csv`.
+Table of germplasmName-DNA-sample-name matches are here: `output/OnlyChosen_germplasmName_to_FullSampleName_matches_TARI_2021Jan21.csv`.
 
 List of DNA-sample-names are here:  
 
@@ -88,10 +80,10 @@ These are the BLUPs combining data for each clone across trials/locations _witho
 ```{r, message=F, rows.print=12}
 library(tidyverse); library(magrittr);
 source(here::here("code","gsFunctions.R"))
-dbdata<-readRDS(here::here("output","TARI_ExptDesignsDetected_2020Dec18.rds"))
+dbdata<-readRDS(here::here("output","TARI_ExptDesignsDetected_2021Jan21.rds"))
 traits<-c("MCMDS","MCBSDS","CBSDRS","CGMS1","CGMS2","DM","PLTHT","HI",
           "logDYLD", "logFYLD","logTOPYLD","logRTNO")
-blups<-readRDS(file=here::here("output","tari_blupsForModelTraining_twostage_asreml_2020Dec20.rds")) 
+blups<-readRDS(file=here::here("output","tari_blupsForModelTraining_twostage_asreml_2021Jan21.rds")) 
 
 blups %>% 
   left_join(nestDesignsDetectedByTraits(dbdata,traits) %>% 
@@ -119,9 +111,26 @@ blups %>%
 blups %>% 
   select(Trait,blups) %>% 
   unnest(blups) %>% 
-  ggplot(.,aes(x=REL,fill=Trait)) + geom_histogram() + facet_wrap(~Trait, scales='free') + 
+  ggplot(.,aes(x=Trait,y=REL,fill=Trait)) + geom_boxplot(notch=T) + #facet_wrap(~Trait, scales='free') + 
   theme_bw() + scale_fill_viridis_d() + 
   labs(title = "Distribution of BLUP Reliabilities")
+```
+# Marker density and distribution
+```{r, fig.width=10, fig.height=7}
+library(tidyverse); library(magrittr);
+snps<-readRDS(file=here::here("output","DosageMatrix_TARI_2020Dec21.rds"))
+mrks<-colnames(snps) %>% 
+  tibble(SNP_ID=.) %>% 
+  separate(SNP_ID,c("Chr","Pos","Allele"),"_") %>% 
+  mutate(Chr=as.integer(gsub("S","",Chr)),
+         Pos=as.numeric(Pos))
+mrks %>% 
+  ggplot(.,aes(x=Pos,fill=as.character(Chr))) + geom_histogram() + 
+  facet_wrap(~Chr,scales = 'free') + theme_bw() + 
+  scale_fill_viridis_d() + theme(legend.position = 'none',axis.text.x = element_text(angle=90))
+```
+```{r, rows.print=18}
+mrks %>% count(Chr) %>% rmarkdown::paged_table()
 ```
 
 # Prediction accuracy
@@ -132,8 +141,8 @@ blups %>%
 ```{r}
 rm(list=ls());gc()
 library(tidyverse); library(magrittr); 
-cv<-readRDS(here::here("output","cvresults_A_2020Dec21.rds")) %>% 
-  bind_rows(readRDS(here::here("output","cvresults_ADE_2020Dec21.rds"))) %>% 
+cv<-readRDS(here::here("output","cvresults_A_2021Jan21.rds")) %>% 
+  bind_rows(readRDS(here::here("output","cvresults_ADE_2021Jan21.rds"))) %>% 
   unnest(CVresults) %>% 
   select(-splits,-accuracy)
 traits<-c("MCMDS","MCBSDS","CBSDRS","CGMS1","CGMS2","DM","PLTHT","HI",
@@ -145,7 +154,7 @@ cv %<>%
 
 ## Table of mean accuracies
 
-5-fold cross-validation, replicated 10 times.
+5-fold cross-validation, replicated 20 times.
 
 Mean accuracy and upper/lower 95% interval.
 
@@ -164,7 +173,7 @@ cv %>%
 
 ## Boxplot of accuracies
 
-5-fold cross-validation, replicated 10 times.
+5-fold cross-validation, replicated 20 times.
 
 Two prediction models: A (additive-only) and ADE (additive + dominance + additive-by-dominance epistasis).
 
@@ -173,16 +182,58 @@ cv %>%
   ggplot(.,aes(x=Trait,y=accGETGV,fill=modelType)) + 
   geom_boxplot(position = "dodge2",color='gray50',size=0.5) + 
   geom_hline(yintercept = 0, color='darkred') + 
-#  facet_wrap(~GroupName,nrow=1,scales='free_x') + 
   theme_bw() + 
   theme(strip.text.x = element_text(face='bold', size=12),
         axis.text.y = element_text(face='bold', size=14, angle = 0),
-        axis.text.x = element_text(face='bold', size=10, angle = 0),
+        axis.text.x = element_text(face='bold', size=18, angle = 45, hjust = 1),
         axis.title.y = element_text(face='bold', size=12),
         plot.title = element_text(face='bold'),
+        legend.text = element_text(face='bold',size=16),
+        legend.title = element_text(face='bold',size=16),
         legend.position = 'bottom') + 
-  scale_fill_viridis_d() + # coord_flip() + 
+  scale_fill_viridis_d() + 
   labs(title="Prediction Accuracies", y="GEBV or GETGV accuracy",x=NULL) +
   geom_hline(yintercept = 0, color='darkred')
 ```
+
+1. Accuracy estimates are most improved relative to previously. I didn't run the precise cross-validation folds so the judgement is based on visual comparison to the Dec. 2020 plot. 
+2. DYLD and FYLD are _not_ well predicted and I would not recommend using them based on selection.
+
+# Genetic Gain
+
+```{r, fig.width=8, fig.height=10}
+library(tidyverse)
+library(magrittr)
+gebvs <- read.csv(here::here("output", "GEBV_TARI_ModelA_2021Jan21.csv"), 
+    stringsAsFactors = F)
+gebvs %>% 
+  select(GID, Group, any_of(traits)) %>% 
+  pivot_longer(cols = any_of(traits), 
+               names_to = "Trait", values_to = "GEBV") %>% 
+  group_by(Trait, Group) %>% 
+  summarize(meanGEBV = mean(GEBV), 
+            stdErr = sd(GEBV)/sqrt(n()), 
+            upperSE = meanGEBV + stdErr, 
+            lowerSE = meanGEBV - stdErr) %>% 
+  ungroup() %>% 
+  mutate(Group=factor(Group,levels=c("TARI_TP","DCas20_5629"))) %>% 
+  ggplot(., aes(x = Group, 
+                y = meanGEBV, 
+                fill = Trait)) + 
+  geom_bar(stat = "identity", color = "gray60", 
+           size = 1.25) + 
+  geom_linerange(aes(ymax = upperSE, ymin = lowerSE), color = "gray60", size = 1.25) + 
+  facet_wrap(~Trait, scales = "free_y", ncol = 2) + 
+  theme_bw() + 
+  geom_hline(yintercept = 0, size = 1.15, color = "black") + 
+  theme(axis.text.x = element_text(face = "bold", angle = 0, size = 12), 
+        axis.title.y = element_text(face = "bold", size = 14), 
+        legend.position = "none", 
+        strip.background.x = element_blank(), 
+        strip.text = element_text(face = "bold", size = 14)) + 
+  scale_fill_viridis_d() + 
+  labs(x = NULL, y = "Mean GEBVs")
+```
+
+
 

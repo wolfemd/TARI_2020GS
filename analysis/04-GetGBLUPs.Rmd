@@ -10,7 +10,8 @@ editor_options:
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = F, tidy = T)
+knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = F, 
+                      tidy='styler', tidy.opts=list(strict=FALSE,width.cutoff=100), highlight=TRUE)
 ```
 
 # Previous step
@@ -32,14 +33,11 @@ export OMP_NUM_THREADS=56 # activate multithread OpenBLAS
 ```{r, eval=F}
 library(tidyverse); library(magrittr); 
 source(here::here("code","gsFunctions.R"))
-
-A<-readRDS(file=here::here("output","Kinship_A_TARI_2020Dec21.rds"))
-D<-readRDS(file=here::here("output","Kinship_D_TARI_2020Dec21.rds"))
-AD<-readRDS(file=here::here("output","Kinship_AD_TARI_2020Dec21.rds"))
+A<-readRDS(file=here::here("output","Kinship_A_TARI_2021Jan21.rds"))
 
 # BLUPs from the 2 stage procedure
 # (stage 1 of 2) 
-blups<-readRDS(file=here::here("output","tari_blupsForModelTraining_twostage_asreml_2020Dec20.rds")) %>% 
+blups<-readRDS(file=here::here("output","tari_blupsForModelTraining_twostage_asreml_2021Jan21.rds")) %>% 
   select(Trait,blups) %>% 
   unnest(blups) %>% 
   select(-`std error`) %>% 
@@ -57,23 +55,25 @@ Model A
 ```{r, eval=F}
 options(future.globals.maxSize= 1500*1024^2)
 predModelA<-runGenomicPredictions(blups,modelType="A",grms=list(A=A),gid="GID",ncores=14)
-saveRDS(predModelA,file = here::here("output","genomicPredictions_ModelA_twostage_TARI_2020Dec21.rds"))
+saveRDS(predModelA,file = here::here("output","genomicPredictions_ModelA_twostage_TARI_2021Jan21.rds"))
 ```
 
 Model ADE
 ```{r, eval=F}
+D<-readRDS(file=here::here("output","Kinship_D_TARI_2021Jan21.rds"))
+AD<-readRDS(file=here::here("output","Kinship_AD_TARI_2021Jan21.rds"))
 options(future.globals.maxSize= 3000*1024^2)
 predModelADE<-runGenomicPredictions(blups,modelType="ADE",grms=list(A=A,D=D,AD=AD),gid="GID",ncores=14)
-saveRDS(predModelADE,file = here::here("output","genomicPredictions_ModelADE_twostage_TARI_2020Dec21.rds"))
+saveRDS(predModelADE,file = here::here("output","genomicPredictions_ModelADE_twostage_TARI_2021Jan21.rds"))
 ```
 
-# Write GEBVs to disk
+# Write GEBV/GETV to disk
 
 ```{r}
 rm(list=ls()); gc()
 library(tidyverse); library(magrittr);
-predModelA<-readRDS(file = here::here("output","genomicPredictions_ModelA_twostage_TARI_2020Dec21.rds"))
-predModelADE<-readRDS(file = here::here("output","genomicPredictions_ModelADE_twostage_TARI_2020Dec21.rds"))
+predModelA<-readRDS(file = here::here("output","genomicPredictions_ModelA_twostage_TARI_2021Jan21.rds"))
+predModelADE<-readRDS(file = here::here("output","genomicPredictions_ModelADE_twostage_TARI_2021Jan21.rds"))
 traits<-c("MCMDS","MCBSDS","CBSDRS","CGMS1","CGMS2","DM","PLTHT","HI",
           "logDYLD", "logFYLD","logTOPYLD","logRTNO")
 ```
@@ -117,7 +117,7 @@ predModelA %>%
   mutate(Group=ifelse(grepl("[...]",GID),"DCas20_5629","TARI_TP")) %>% 
   select(Group,GID,any_of(traits)) %>% 
   arrange(desc(Group)) %>% 
-  write.csv(., file = here::here("output","GEBV_TARI_ModelA_2020Dec21.csv"), row.names = F)
+  write.csv(., file = here::here("output","GEBV_TARI_ModelA_2021Jan21.csv"), row.names = F)
 
 ## Format and write GETGV
 predModelADE %>% 
@@ -130,7 +130,7 @@ predModelADE %>%
   mutate(Group=ifelse(grepl("[...]",GID),"DCas20_5629","TARI_TP")) %>% 
   select(Group,GID,any_of(traits)) %>% 
   arrange(desc(Group)) %>% 
-  write.csv(., file = here::here("output","GETGV_TARI_ModelADE_2020Dec21.csv"), row.names = F)
+  write.csv(., file = here::here("output","GETGV_TARI_ModelADE_2021Jan21.csv"), row.names = F)
 ```
 
 

@@ -10,9 +10,9 @@ editor_options:
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = F, tidy = T)
+knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = F, 
+                      tidy='styler', tidy.opts=list(strict=FALSE,width.cutoff=100), highlight=TRUE)
 ```
-
 # Previous step
 
 2. [Get BLUPs combining all trial data](02-GetBLUPs.html): Combine data from all trait-trials to get BLUPs for downstream genomic prediction. 
@@ -60,19 +60,19 @@ dim(snps) # [1] 18163 37136
 ```
 
 ```{r, eval=F}
-blups<-readRDS(file=here::here("output","tari_blupsForModelTraining_twostage_asreml_2020Dec20.rds"))
+blups<-readRDS(file=here::here("output","tari_blupsForModelTraining_twostage_asreml_2021Jan21.rds"))
 blups %<>% 
   select(Trait,blups) %>% 
   unnest(blups) %>% 
   select(-`std error`) %>% 
   filter(GID %in% rownames(snps))
-table(unique(blups$GID) %in% rownames(snps)) # 422
+table(unique(blups$GID) %in% rownames(snps)) # 861
 ```
 
 ```{r, eval=F}
 samples2Keep<-unique(blups$GID) %>% 
   union(.,rownames(snps5629))
-length(samples2Keep) # [1] 3570
+length(samples2Keep) # [1] 4009
 snps<-snps[samples2Keep,]; 
 gc()
 ```
@@ -82,7 +82,7 @@ gc()
 ```{r, eval=F}
 source(here::here("code","gsFunctions.R"))
 snps %<>% maf_filter(.,0.01)
-dim(snps) # [1]  3570 36984
+dim(snps) # [1] 4009 37026
 ```
 
 ## Make Add, Dom and Epi kinships
@@ -98,10 +98,10 @@ A<-kinship(snps,type="add")
 D<-kinship(snps,type="dom")
 AD<-A*D
 
-saveRDS(snps,file=here::here("output","DosageMatrix_TARI_2020Dec21.rds"))
-saveRDS(A,file=here::here("output","Kinship_A_TARI_2020Dec21.rds"))
-saveRDS(D,file=here::here("output","Kinship_D_TARI_2020Dec21.rds"))
-saveRDS(AD,file=here::here("output","Kinship_AD_TARI_2020Dec21.rds"))
+saveRDS(snps,file=here::here("output","DosageMatrix_TARI_2021Jan21.rds"))
+saveRDS(A,file=here::here("output","Kinship_A_TARI_2021Jan21.rds"))
+saveRDS(D,file=here::here("output","Kinship_D_TARI_2021Jan21.rds"))
+saveRDS(AD,file=here::here("output","Kinship_AD_TARI_2021Jan21.rds"))
 #rm(snps); gc()
 ```
 
@@ -120,9 +120,9 @@ export OMP_NUM_THREADS=56 # activate multithread OpenBLAS
 rm(list=ls())
 library(tidyverse); library(magrittr); 
 source(here::here("code","gsFunctions.R"))
-blups<-readRDS(file=here::here("output","tari_blupsForModelTraining_twostage_asreml_2020Dec20.rds"))
+blups<-readRDS(file=here::here("output","tari_blupsForModelTraining_twostage_asreml_2021Jan21.rds"))
 
-A<-readRDS(file=here::here("output","Kinship_A_TARI_2020Dec21.rds"))
+A<-readRDS(file=here::here("output","Kinship_A_TARI_2021Jan21.rds"))
 blups %<>% 
   select(Trait,blups) %>% 
   unnest(blups) %>% 
@@ -135,34 +135,34 @@ cv2do %>% rmarkdown::paged_table()
 # # A tibble: 12 x 2
 #    Trait     TrainTestData     
 #    <chr>     <list>            
-#  1 MCMDS     <tibble [422 x 6]>
-#  2 MCBSDS    <tibble [422 x 6]>
-#  3 CBSDRS    <tibble [421 x 6]>
-#  4 CGMS1     <tibble [416 x 6]>
-#  5 CGMS2     <tibble [416 x 6]>
-#  6 DM        <tibble [421 x 6]>
-#  7 logTOPYLD <tibble [405 x 6]>
-#  8 logRTNO   <tibble [402 x 6]>
-#  9 HI        <tibble [26 x 6]> 
-# 10 logDYLD   <tibble [26 x 6]> 
-# 11 logFYLD   <tibble [26 x 6]> 
-# 12 PLTHT     <tibble [21 x 6]> 
+#  1 MCMDS     <tibble [852 x 6]>
+#  2 MCBSDS    <tibble [860 x 6]>
+#  3 CBSDRS    <tibble [715 x 6]>
+#  4 CGMS1     <tibble [422 x 6]>
+#  5 CGMS2     <tibble [419 x 6]>
+#  6 DM        <tibble [471 x 6]>
+#  7 logTOPYLD <tibble [702 x 6]>
+#  8 logRTNO   <tibble [697 x 6]>
+#  9 HI        <tibble [297 x 6]>
+# 10 logDYLD   <tibble [76 x 6]> 
+# 11 logFYLD   <tibble [297 x 6]>
+# 12 PLTHT     <tibble [207 x 6]>
 ```
 
 ```{r}
 cv2do$TrainTestData[[6]] %>% head %>% rmarkdown::paged_table()
-#                         GID        BLUP       PEV       REL    drgBLUP       WT
-# 1 ALBERT:CA8RLANXX:7:526312  0.19175750 0.3671294 0.7876987  0.2434402 16.28405
-# 2        CH05_203:250442976 -1.06620285 0.3408428 0.8028995 -1.3279406 17.41691
-# 3      COLICANANA:250442941 -1.42969014 0.3672643 0.7876207 -1.8152014 16.27851
-# 4           EYOPE:250442952  0.89600706 0.3487736 0.7983134  1.1223751 17.06352
-# 5       F10_30_R2:250442916  1.90423411 0.3406459 0.8030134  2.3713604 17.42582
-# 6         I000388:250300404 -0.07756348 1.3379835 0.2262792 -0.3427778  1.70979
+#                         GID       BLUP       PEV       REL    drgBLUP       WT
+# 1 ALBERT:CA8RLANXX:7:526312  0.1917575 0.3671294 0.7876987  0.2434402 16.28405
+# 2        CH05_203:250442976 -1.0662028 0.3408428 0.8028995 -1.3279406 17.41691
+# 3      COLICANANA:250442941 -1.4296901 0.3672643 0.7876207 -1.8152014 16.27851
+# 4           EYOPE:250442952  0.8960071 0.3487736 0.7983134  1.1223751 17.06352
+# 5       F10_30_R2:250442916  1.9042341 0.3406459 0.8030134  2.3713604 17.42582
+# 6 F19_NL:CA8RLANXX:7:526313 -1.7246210 0.4232322 0.7552559 -2.2834923 14.18991
 ```
 
 The function below `runCrossVal()` function implements nfold cross-validation. Specifically, for each of **nrepeats** it splits the data into **nfolds** sets according to **gid**. So if `nfolds=5` then the the clones will be divided into 5 groups and 5 predictions will be made. In each prediction, 4/5 of the clones will be used to predict the remaining 1/5. Accuracy of the model is measured as the correlation between the BLUPs (adj. mean for each CLONE) in the *test set* and the GEBV (the prediction made of each clone when it was in the test set).
 
-Below, 4 chunks of "5 reps x 5-fold" cross-validation are run on 1 large memory Cornell CBSU machine each (e.g. [cbsulm16; 112 cores, 512 GB RAM](https://biohpc.cornell.edu/lab/hardware.aspx)).
+Below, 20 reps x 5-fold cross-validation are run on 1 large memory Cornell CBSU machine each (e.g. [cbsulm15; 112 cores, 512 GB RAM](https://biohpc.cornell.edu/lab/hardware.aspx)).
 
 ## CV - modelType="A"
 
@@ -173,28 +173,28 @@ cv_A<-cv2do %>%
                                                   modelType="A",
                                                   grms=list(A=A),
                                                   byGroup=FALSE,augmentTP=NULL,
-                                                  nrepeats=10,nfolds=5,ncores=25,gid="GID")))
+                                                  nrepeats=20,nfolds=5,ncores=25,gid="GID")))
 runtime<-proc.time()[3]-starttime; runtime
 
 cv_A %<>% mutate(modelType="A") %>% dplyr::select(-TrainTestData)
-saveRDS(cv_A,file=here::here("output","cvresults_A_2020Dec21.rds"))
+saveRDS(cv_A,file=here::here("output","cvresults_A_2021Jan21.rds"))
 ```
 
 ## CV - modelType="ADE"
 
 ```{r, eval=F}
 options(future.globals.maxSize= 3000*1024^2)
-D<-readRDS(file=here::here("output","Kinship_D_TARI_2020Dec21.rds"))
-AD<-readRDS(file=here::here("output","Kinship_AD_TARI_2020Dec21.rds"))
+D<-readRDS(file=here::here("output","Kinship_D_TARI_2021Jan21.rds"))
+AD<-readRDS(file=here::here("output","Kinship_AD_TARI_2021Jan21.rds"))
 starttime<-proc.time()[3]
 cv_ADE<-cv2do %>% 
   mutate(CVresults=map(TrainTestData,~runCrossVal(TrainTestData=.,
                                                   modelType="ADE",
                                                   grms=list(A=A,D=D,AD=AD),
                                                   byGroup=FALSE,augmentTP=NULL,
-                                                  nrepeats=5,nfolds=5,ncores=25,gid="GID")))
+                                                  nrepeats=20,nfolds=5,ncores=25,gid="GID")))
 cv_ADE %<>% mutate(modelType="ADE") %>% dplyr::select(-TrainTestData)
-saveRDS(cv_ADE,file=here::here("output","cvresults_ADE_2020Dec21.rds"))
+saveRDS(cv_ADE,file=here::here("output","cvresults_ADE_2021Jan21.rds"))
 runtime<-proc.time()[3]-starttime; runtime
 
 ```

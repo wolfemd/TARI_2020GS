@@ -10,7 +10,8 @@ editor_options:
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = F, tidy = T)
+knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = F, 
+                      tidy='styler', tidy.opts=list(strict=FALSE,width.cutoff=100), highlight=TRUE)
 ```
 
 # Previous step 
@@ -35,7 +36,7 @@ export OMP_NUM_THREADS=56
 rm(list=ls())
 library(tidyverse); library(magrittr);
 source(here::here("code","gsFunctions.R"))
-dbdata<-readRDS(here::here("output","TARI_ExptDesignsDetected_2020Dec18.rds"))
+dbdata<-readRDS(here::here("output","TARI_ExptDesignsDetected_2021Jan21.rds"))
 traits<-c("MCMDS","MCBSDS","CBSDRS","CGMS1","CGMS2","DM","PLTHT","HI",
           "logDYLD", "logFYLD","logTOPYLD","logRTNO")
 
@@ -155,7 +156,7 @@ dbdata %<>%
 
 ## Output file
 ```{r, eval=F}
-saveRDS(dbdata,file=here::here("output","tari_blupsForModelTraining_twostage_asreml_2020Dec20.rds"))
+saveRDS(dbdata,file=here::here("output","tari_blupsForModelTraining_twostage_asreml_2021Jan21.rds"))
 ```
 
 # Results

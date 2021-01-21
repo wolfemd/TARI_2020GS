@@ -2,13 +2,16 @@
 title: "Review and QC of TARI training data"
 site: workflowr::wflow_site
 date: "2020-December-18"
-output: workflowr::wflow_html
+output: 
+  workflowr::wflow_html:
+    highlight: breezedark
 editor_options:
   chunk_output_type: inline
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = F, tidy = T)
+knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = F, 
+                      tidy='styler', tidy.opts=list(strict=FALSE,width.cutoff=100), highlight=TRUE)
 ```
 
 Follow outlined GenomicPredictionChecklist and previous pipeline to process cassavabase data for ultimate genomic prediction.
