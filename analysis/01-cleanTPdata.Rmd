@@ -23,11 +23,10 @@ Below we will clean and format training data.
 Downloaded **all** TARI field trials.
 
 1. [Cassavabase search wizard](https://www.cassavabase.org/breeders/search):  
-2. Selected *all* TARI trials currently available. Make a list. Named it **ALL_TARI_TRIALS_2020Dec18**.
+2. Selected *all* TARI trials currently available. Make a list. Named it **ALL_TARI_TRIALS_2021Jan20**.
 3. Go to **Manage** --> **Download** [here](https://www.cassavabase.org/breeders/download). Download phenotypes (plot-basis only) and meta-data as CSV using the corresponding boxes / drop-downs. 
-4. Store flatfiles, unaltered in directory `data/DatabaseDownload_2020Dec18/`. 
+4. Store flatfiles, unaltered in directory `data/DatabaseDownload_2021Jan20/`. 
 
-  * **TRIED TO DOWNLOAD META-DATA, BUT DB IS GIVING "SERVER ERROR"** 
 
 ```{r}
 rm(list=ls())
@@ -35,15 +34,51 @@ library(tidyverse); library(magrittr);
 source(here::here("code","gsFunctions.R"))
 ```
 
-Read DB data directly from the Cassavabase FTP server.
+But first.... TARI seems to have a'lot of plant-basis data which I am not usually including.
 ```{r}
-dbdata<-readDBdata(phenotypeFile = here::here("data/DatabaseDownload_2020Dec18","2020-12-18T183047phenotype_download.csv"),
-                   metadataFile = here::here("data/DatabaseDownload_2020Dec18","2020-12-18T174951metadata_download.csv"))
-#meta<-read.csv(here::here("data/DatabaseDownload_2020Dec18","2020-12-18T174951metadata_download.csv"),stringsAsFactors = F)
+indata<-read.csv(here::here("data/DatabaseDownload_2021Jan20","2021-01-20T203949phenotype_download.csv"),
+                   na.strings = c("#VALUE!",NA,".",""," ","-","\""),
+                   stringsAsFactors = F)
+indata %>% count(observationLevel)
+```
+Over 191K "plants" between 2018-2020.
+
+The following printed studyNames have plant-basis data. They **WILL NOT** be included in subsequent analyses.
+```{r}
+indata %>% filter(observationLevel=="plant") %$% unique(studyName)
+```
+
+Read DB data directly from the Cassavabase FTP server.
+
+```{r}
+rm(indata);
+dbdata<-readDBdata(phenotypeFile = here::here("data/DatabaseDownload_2021Jan20","2021-01-20T203949phenotype_download.csv"),
+                   metadataFile = here::here("data/DatabaseDownload_2021Jan20","2021-01-20T174234metadata_download.csv"))
+```
+
+Before proceeding, the 2019 seedling nursery....
+
+```{r}
+dbdata %>% 
+  filter(studyName=="19_C1_GS_Seedling_Nursery_Chambezi",
+         germplasmName=="TZMRK180069") %>% 
+  distinct(germplasmName,observationUnitName,plantNumber,plotNumber,observationUnitName) %>% 
+  rmarkdown::paged_table()
+```
+```{r}
+snps5629<-readRDS(here::here("output","DosageMatrix_DCas20_5629_EA_REFimputedAndFiltered.rds"))
+rownames(snps5629) %>% grep("TZMRK180069",., value = T, ignore.case = T)
+```
+
+Unfortunately, these don't currently match. As of Jan 21, wrote to TARI team about this. Will proceed with prediction, but CBSD phenos for the GS C1 seedlings _won't_ be included at this time. 
+```{r}
+rm(snps5629); gc()
 dbdata %<>% 
   mutate(locationName=ifelse(locationName=="bwanga","Bwanga",locationName),
          locationName=ifelse(locationName=="kasulu","Kasulu",locationName))
 ```
+
+
 
 # Group and select trials to analyze
 
@@ -71,6 +106,13 @@ dbdata %>%
   filter(is.na(TrialType)) %$% unique(studyName)
 ```
 
+Include (by request) the "19_C1_GS_Seedling_Nursery_Chambezi".
+
+```{r}
+dbdata %<>% 
+  mutate(TrialType=ifelse(studyName=="19_C1_GS_Seedling_Nursery_Chambezi","SeedlingNursery",TrialType))
+```
+
 ## Remove unclassified trials
 
 ```{r}
@@ -79,7 +121,7 @@ dbdata %<>%
 dbdata %>% 
     group_by(programName) %>% 
     summarize(N=n()) %>% rmarkdown::paged_table()
-#	12718 plots
+#	18591	(now including a ~5K plot seedling nursery) plots
 ```
 Making a table of abbreviations for renaming
 ```{r}
@@ -111,9 +153,8 @@ traitabbrevs %>% rmarkdown::paged_table()
 Run function `renameAndSelectCols()` to rename columns and remove everything unecessary
 
 ```{r}
-dbdata<-renameAndSelectCols(traitabbrevs,indata=dbdata,customColsToKeep = "TrialType")
+dbdata<-renameAndSelectCols(traitabbrevs,indata=dbdata,customColsToKeep = c("TrialType","observationUnitName"))
 ```
-
 
 # QC Trait values
 
@@ -200,199 +241,161 @@ dbdata<-dbdata %>%
 
 # [User input] Assign genos to phenos
 
-This step is mostly copy-pasted from previous processing of IITA- and NRCRI-specific data. 
 
-Uses 3 flat files, which are available e.g. [here](ftp://ftp.cassavabase.org/marnin_datasets/NRCRI_2020GS/data/). Specifically, `IITA_GBStoPhenoMaster_33018.csv`, `GBSdataMasterList_31818.csv` and `NRCRI_GBStoPhenoMaster_40318.csv`. I copy them to the `data/` sub-directory for the current analysis.
+I customized this step for TARI. 
 
-In addition, DArT-only samples are now expected to also have phenotypes. Therefore, checking for matches in new flatfiles, deposited in the `data/` (see code below).
+Match "germplasmName" from TARI phenotyping trials to "FullSampleName" from TARI GBS and DArT genotyping data.
+
+Uses 2 flat files, which are available e.g. [here](ftp://ftp.cassavabase.org/marnin_datasets/NRCRI_2020GS/data/). Specifically, `IITA_GBStoPhenoMaster_33018.csv`, `GBSdataMasterList_31818.csv`. I copy them to the `data/` sub-directory for the current analysis. In addition, DArT-only samples are now expected to also have phenotypes. Therefore, checking for matches in new flatfiles, deposited in the `data/` (see code below).
 
 ```{r}
 library(tidyverse); library(magrittr)
-gbs2phenoMaster<-dbdata %>% 
-  select(germplasmName) %>% 
-  distinct %>% 
-  left_join(read.csv(here::here("data","NRCRI_GBStoPhenoMaster_40318.csv"), 
-                     stringsAsFactors = F)) %>% 
-  mutate(FullSampleName=ifelse(grepl("C2a",germplasmName,ignore.case = T) & 
-                                 is.na(FullSampleName),germplasmName,FullSampleName)) %>% 
-  filter(!is.na(FullSampleName)) %>% 
-  select(germplasmName,FullSampleName) %>% 
-  bind_rows(dbdata %>% 
-              select(germplasmName) %>% 
-              distinct %>% 
-              left_join(read.csv(here::here("data","IITA_GBStoPhenoMaster_33018.csv"), 
-                                 stringsAsFactors = F)) %>% 
-              filter(!is.na(FullSampleName)) %>% 
-              select(germplasmName,FullSampleName)) %>% 
-  bind_rows(dbdata %>% 
-              select(germplasmName) %>% 
-              distinct %>% 
-              left_join(read.csv(here::here("data","GBSdataMasterList_31818.csv"), 
-                                 stringsAsFactors = F) %>% 
-                          select(DNASample,FullSampleName) %>% 
-                          rename(germplasmName=DNASample)) %>% 
-              filter(!is.na(FullSampleName)) %>% 
-              select(germplasmName,FullSampleName)) %>% 
-  bind_rows(dbdata %>% 
-              select(germplasmName) %>% 
-              distinct %>% 
-              mutate(germplasmSynonyms=ifelse(grepl("^UG",germplasmName,ignore.case = T),
-                                              gsub("UG","Ug",germplasmName),germplasmName)) %>% 
-              left_join(read.csv(here::here("data","GBSdataMasterList_31818.csv"), 
-                                 stringsAsFactors = F) %>% 
-                          select(DNASample,FullSampleName) %>% 
-                          rename(germplasmSynonyms=DNASample)) %>% 
-              filter(!is.na(FullSampleName)) %>% 
-              select(germplasmName,FullSampleName)) %>%  
-  bind_rows(dbdata %>% 
-              select(germplasmName) %>% 
-              distinct %>% 
-              mutate(germplasmSynonyms=ifelse(grepl("^TZ",germplasmName,
-                                                    ignore.case = T),
-                                              gsub("TZ","",germplasmName),germplasmName)) %>% 
-              left_join(read.csv(here::here("data","GBSdataMasterList_31818.csv"), 
-                                 stringsAsFactors = F) %>% 
-                          select(DNASample,FullSampleName) %>% 
-                          rename(germplasmSynonyms=DNASample)) %>% 
-              filter(!is.na(FullSampleName)) %>%
-              select(germplasmName,FullSampleName)) %>% 
-  distinct %>% 
+
+# Distinct "germplasmName" identifying clones in TARI phenotyping plots
+tzgermnames<-dbdata %>% 
+  distinct(germplasmName)
+
+  # 1) Match TARI samples where germplasmName is prefixed with TZ, but FullSampleName
+phenos2genos<-tzgermnames %>% 
+  mutate(germplasmSynonyms=ifelse(grepl("^TZ",germplasmName,
+                                        ignore.case = T),
+                                  gsub("TZ","",germplasmName),germplasmName)) %>% 
   left_join(read.csv(here::here("data","GBSdataMasterList_31818.csv"), 
                      stringsAsFactors = F) %>% 
-              select(FullSampleName,OrigKeyFile,Institute) %>% 
-              rename(OriginOfSample=Institute)) %>% 
-  mutate(OrigKeyFile=ifelse(grepl("C2a",germplasmName,ignore.case = T),
-                            ifelse(is.na(OrigKeyFile),"LavalGBS",OrigKeyFile),
-                            OrigKeyFile),
-         OriginOfSample=ifelse(grepl("C2a",germplasmName,ignore.case = T),
-                               ifelse(is.na(OriginOfSample),"NRCRI",OriginOfSample),
-                               OriginOfSample))
+              select(DNASample,FullSampleName) %>% 
+              rename(germplasmSynonyms=DNASample)) %>%  
+  # 2) Match additional samples based on genotyping done by IITA and NaCRRI:
+  ## IITA
+  bind_rows(tzgermnames %>%
+              left_join(read.csv(here::here("data","IITA_GBStoPhenoMaster_33018.csv"),
+                                 stringsAsFactors = F))) %>% 
+  ## NaCRRI
+  bind_rows(tzgermnames %>%
+              mutate(germplasmSynonyms=ifelse(grepl("^UG",germplasmName,ignore.case = T),
+                                              gsub("UG","Ug",germplasmName),germplasmName)) %>%
+              left_join(read.csv(here::here("data","GBSdataMasterList_31818.csv"),
+                                 stringsAsFactors = F) %>%
+                          select(DNASample,FullSampleName) %>%
+                          rename(germplasmSynonyms=DNASample)))
+phenos2genos %>% filter(!is.na(FullSampleName)) %>% distinct(germplasmName) %>% nrow(.) # [1] 435
+# Only about half the germplasmName we expect
+```
+Only about half the ~834 germplasmName we expect to correspond to the clones from Ukiriguru _and_ Kibaha. 
 
-## NEW: check for germName-DArT name matches
-germNamesWithoutGBSgenos<-dbdata %>% 
-  select(programName,germplasmName) %>% 
-  distinct %>% 
-  left_join(gbs2phenoMaster) %>% 
-  filter(is.na(FullSampleName)) %>% 
-  select(-FullSampleName)
-## NEW: check for germName-DArT name matches
-germNamesWithoutGBSgenos<-dbdata %>% 
-  select(programName,germplasmName) %>% 
-  distinct %>% 
-  left_join(gbs2phenoMaster) %>% 
-  filter(is.na(FullSampleName)) %>% 
-  select(-FullSampleName)
+At this point, I realized the Kibaha samples are missing.
 
-germNamesWithDArT<-germNamesWithoutGBSgenos %>% 
-  inner_join(read.table(here::here("data","chr1_RefPanelAndGSprogeny_ReadyForGP_72719.fam"), 
-                        header = F, stringsAsFactors = F)$V2 %>% 
-               grep("TMS16|TMS17|TMS18|TMS19|TMS20",.,value = T, ignore.case = T) %>% 
-               tibble(dartName=.) %>% 
-               separate(dartName,c("germplasmName","dartID"),"_",extra = 'merge',remove = F)) %>% 
+The solution is in the code below. It required some staring at names. Heneriko supplied a list from the 2016 predictions (see: `data/TARI 2016_TP_CLONES.csv`), which was helpful. 
+
+```{r}
+phenos2genos %<>% 
+  bind_rows(tzgermnames %>% 
+              mutate(germplasmSynonyms=gsub("^TZ","",germplasmName),
+                     germplasmSynonyms=gsub("HS","_",germplasmSynonyms),
+                     germplasmSynonyms=gsub("FS","_",germplasmSynonyms)) %>% 
+              left_join(read.csv(here::here("data","GBSdataMasterList_31818.csv"), 
+                                 stringsAsFactors = F) %>% 
+                          select(DNASample,FullSampleName) %>% 
+                          rename(germplasmSynonyms=DNASample) %>% 
+                          filter(grepl("^KBH",germplasmSynonyms)) %>% 
+                          mutate(germplasmSynonyms=gsub("KBH2012","KBH12",germplasmSynonyms),
+                                 germplasmSynonyms=gsub("KBH2013","KBH13",germplasmSynonyms),
+                                 germplasmSynonyms=gsub("KBH2014","KBH14",germplasmSynonyms),
+                                 germplasmSynonyms=gsub("KBH2015","KBH15",germplasmSynonyms),
+                                 germplasmSynonyms=gsub("KBH2016","KBH16",germplasmSynonyms),
+                                 germplasmSynonyms=gsub("KBH2017","KBH17",germplasmSynonyms),
+                                 germplasmSynonyms=gsub("KBH2018","KBH18",germplasmSynonyms),
+                                 germplasmSynonyms=gsub("KBH2019","KBH19",germplasmSynonyms))))
+phenos2genos %<>% 
+  filter(!is.na(FullSampleName)) %>% 
+  distinct(germplasmName,FullSampleName)
+
+phenos2genos %>% distinct(germplasmName) %>% nrow(.) # [1] 914
+```
+
+Now there are 914 germplasmName-FullSampleName matches.
+
+For both the "germplasmName" and the "FullSampleName" lists, try matching by making everything upper case on both sides. There are many capitolization related issues I see. Examples:
+
+* germplasmName == "LIONGOKWIMBA", FullSampleName == "Liongokwimba"
+* germplasmName == "kiroba", FullSampleName == "KIROBA"
+* germplasmName == "Mkumba", FullSampleName == "MKUMBA"
+
+But also, e.g.:
+
+* germplasmName == "TZ-130", FullSampleName == "TZ_130"
+```{r}
+phenos2genos %<>% 
+  bind_rows(tzgermnames %>% 
+  anti_join(phenos2genos) %>%
+  mutate(germplasmSynonyms=toupper(germplasmName),
+         germplasmSynonyms=gsub("-","_",germplasmSynonyms)) %>% 
+  left_join(read.csv(here::here("data","GBSdataMasterList_31818.csv"), 
+                                 stringsAsFactors = F) %>% 
+                          select(DNASample,FullSampleName) %>% 
+                          rename(germplasmSynonyms=DNASample) %>% 
+                          mutate(germplasmSynonyms=toupper(germplasmSynonyms),
+                                 germplasmSynonyms=gsub("-","_",germplasmSynonyms)))) %>% 
+  filter(!is.na(FullSampleName)) %>% 
+  distinct(germplasmName,FullSampleName)
+
+phenos2genos %>% distinct(germplasmName) %>% nrow(.) # [1] 921 .... not an awesome improvement
+
+```
+
+Next, and last but not least, need to check for matches with the new germplasm genotyped only by DArTseqLD (DCas20_5629). Based on the check I did above, this is not currently possible, so skip.
+
+```{r}
+germNamesWithoutGBSgenos<-tzgermnames %>%
+  anti_join(phenos2genos)
+germNamesWithoutGBSgenos %>% nrow() # [1] 2938
+```
+
+Select one genotype record (FullSampleName) per unique clone (germplasmName)
+```{r}
+genosChosenForPhenos<-phenos2genos %>% 
   group_by(germplasmName) %>% 
-  slice(1) %>% 
-  ungroup() %>% 
-  rename(FullSampleName=dartName) %>% 
-  mutate(OrigKeyFile="DArTseqLD", OriginOfSample="IITA") %>% 
-  select(-dartID)
-print(paste0(nrow(germNamesWithDArT)," germNames with DArT-only genos"))
+  slice(1) %>% ungroup()
+print(paste0(nrow(genosChosenForPhenos)," germNames with GBS geno. records"))
+```
 
-# first, filter to just program-DNAorigin matches
-germNamesWithGenos<-dbdata %>% 
-  select(programName,germplasmName) %>% 
-  distinct %>% 
-  left_join(gbs2phenoMaster) %>% 
-  filter(!is.na(FullSampleName))
-print(paste0(nrow(germNamesWithGenos)," germNames with GBS genos"))
-
-# program-germNames with locally sourced GBS samples
-germNamesWithGenos_HasLocalSourcedGBS<-germNamesWithGenos %>% 
-  filter(programName==OriginOfSample) %>% 
-  select(programName,germplasmName) %>% 
-  semi_join(germNamesWithGenos,.) %>% 
-  group_by(programName,germplasmName) %>% # select one DNA per germplasmName per program
-  slice(1) %>% ungroup() 
-print(paste0(nrow(germNamesWithGenos_HasLocalSourcedGBS)," germNames with local GBS genos"))
-
-# the rest (program-germNames) with GBS but coming from a different breeding program
-germNamesWithGenos_NoLocalSourcedGBS<-germNamesWithGenos %>% 
-  filter(programName==OriginOfSample) %>% 
-  select(programName,germplasmName) %>% 
-  anti_join(germNamesWithGenos,.) %>% 
-  # select one DNA per germplasmName per program
-  group_by(programName,germplasmName) %>% 
-  slice(1) %>% ungroup() 
-print(paste0(nrow(germNamesWithGenos_NoLocalSourcedGBS)," germNames without local GBS genos"))
-
-genosForPhenos<-bind_rows(germNamesWithGenos_HasLocalSourcedGBS,
-                        germNamesWithGenos_NoLocalSourcedGBS) %>% 
-  bind_rows(germNamesWithDArT)
-
-print(paste0(nrow(genosForPhenos)," total germNames with genos either GBS or DArT"))
-
+```{r}
 dbdata %<>% 
-    left_join(genosForPhenos) 
+    left_join(genosChosenForPhenos) 
 
 # Create a new identifier, GID
 ## Equals the value SNP data name (FullSampleName) 
 ## else germplasmName if no SNP data
+## [FOR TARI] if studyName=="19_C1_GS_Seedling_Nursery_Chambezi", GID should be the "observationUnitName"
 dbdata %<>% 
-  mutate(GID=ifelse(is.na(FullSampleName),germplasmName,FullSampleName))
-
+  mutate(GID=ifelse(is.na(FullSampleName),
+                    ifelse(studyName=="19_C1_GS_Seedling_Nursery_Chambezi",
+                           observationUnitName,germplasmName),
+                    FullSampleName))
 ```
 
 ### Write lists for matching genos-to-phenos
 ```{r, eval=F}
-snps_refpanel<-readRDS(here::here("output","DosageMatrix_ImputationReferencePanel_StageVI_91119.rds"))
-snps5629<-readRDS(here::here("output","DosageMatrix_DCas20_5629_EA_REFimputedAndFiltered.rds"))
+# snps_refpanel<-readRDS(here::here("output","DosageMatrix_ImputationReferencePanel_StageVI_91119.rds"))
+# snps5629<-readRDS(here::here("output","DosageMatrix_DCas20_5629_EA_REFimputedAndFiltered.rds"))
+# rownames(snps_refpanel) %>% 
+#     write.csv(.,file = here::here("output","rownames_DosageMatrix_ImputationReferencePanel_StageVI_91119.csv"), row.names = F)
+# rownames(snps5629) %>% 
+#     write.csv(.,file = here::here("output","rownames_DosageMatrix_DCas20_5629_EA_REFimputedAndFiltered.csv"), row.names = F)
+# rm(snps_refpanel,snps5629); gc()
 
-dbdata %>% 
-  distinct(germplasmName,FullSampleName) %>% 
-  write.csv(.,file = here::here("output","germplasmName_to_DNAname_matches_TARI_2020Dec22.csv"), row.names = F)
-rownames(snps_refpanel) %>% 
-    write.csv(.,file = here::here("output","rownames_DosageMatrix_ImputationReferencePanel_StageVI_91119.csv"), row.names = F)
-rownames(snps5629) %>% 
-    write.csv(.,file = here::here("output","rownames_DosageMatrix_DCas20_5629_EA_REFimputedAndFiltered.csv"), row.names = F)
-rm(snps_refpanel,snps5629); gc()
-```
+write.csv(genosChosenForPhenos,
+          file = here::here("output","OnlyChosen_germplasmName_to_FullSampleName_matches_TARI_2021Jan21.csv"), 
+          row.names = F)
 
-```{r}
-# dbdata %>% 
-#   count(germplasmName,FullSampleName) %>% filter(is.na(FullSampleName)) %$% unique(germplasmName)
-```
+write.csv(phenos2genos,
+          file = here::here("output","AllIdentified_germplasmName_to_FullSampleName_matches_TARI_2021Jan21.csv"), 
+          row.names = F)
 
-```{r}
-#  going to check against SNP data
-# DosageMatrix_ImputationReferencePanel_StageVI_91119.rds
-# DosageMatrix_DCas20_5629_EA_REFimputedAndFiltered.rds
-# 
-# snps<-readRDS(file=url(paste0("ftp://ftp.cassavabase.org/marnin_datasets/NGC_BigData/",
-#                               "DosageMatrix_RefPanelAndGSprogeny_ReadyForGP_73019.rds")))
-# rownames_snps<-rownames(snps); rm(snps); gc()
-# # current matches to SNP data
-# dbdata %>% 
-#   distinct(GID,germplasmName,FullSampleName) %>% 
-#   semi_join(tibble(GID=rownames_snps)) %>% nrow() #1340
-# dbdata %>% 
-#   distinct(GID,germplasmName,FullSampleName) %>% 
-#   semi_join(tibble(GID=rownames_snps)) %>% 
-#   filter(grepl("c1",GID,ignore.case = F)) # no C1 clones currently match
-# dbdata %>% 
-#   distinct(GID,germplasmName,FullSampleName) %>% 
-#   semi_join(tibble(GID=rownames_snps)) %>% 
-#   filter(grepl("c2",GID,ignore.case = F)) # no C2 clones either
-# dbdata %>% 
-#   distinct(GID,germplasmName,FullSampleName) %>% 
-#   anti_join(tibble(GID=rownames_snps)) %>% 
-#   filter(grepl("c1|c2",GID,ignore.case = T)) # definitely there are both C1 and C2 phenotypes
-# # and there are C1 and C2 genotypes
-# rownames_snps %>% grep("c1",.,value = T,ignore.case = T) %>% length # [1] 1762
-# rownames_snps %>% grep("c2",.,value = T,ignore.case = T) %>% length # [1] 4291 
 ```
 
 ## Output "cleaned" file
 ```{r}
-saveRDS(dbdata,file=here::here("output","TARI_CleanedTrialData_2020Dec18.rds"))
+saveRDS(dbdata,file=here::here("output","TARI_CleanedTrialData_2021Jan21.rds"))
 ```
 
 # Detect experimental designs
@@ -414,7 +417,7 @@ Start with cleaned data from previous step.
 rm(list=ls()); gc()
 library(tidyverse); library(magrittr);
 source(here::here("code","gsFunctions.R"))
-dbdata<-readRDS(here::here("output","TARI_CleanedTrialData_2020Dec18.rds"))
+dbdata<-readRDS(here::here("output","TARI_CleanedTrialData_2021Jan21.rds"))
 ```
 
 ```{r}
@@ -430,7 +433,7 @@ dbdata %>%
 ```
 ## Output file
 ```{r}
-saveRDS(dbdata,file=here::here("output","TARI_ExptDesignsDetected_2020Dec18.rds"))
+saveRDS(dbdata,file=here::here("output","TARI_ExptDesignsDetected_2021Jan21.rds"))
 ```
 
 # Next step
